@@ -1,0 +1,42 @@
+﻿<Window x:Class="Proekt_BarBer.Сredentials"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Proekt_BarBer"
+        mc:Ignorable="d"
+        Title="Вход в систему" Height="600" Width="800" WindowStartupLocation="CenterScreen" WindowState="Maximized">
+    <Grid>
+        <Grid.Background>
+            <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+                <GradientStop Color="#FFE9DEDE" Offset="0.003"/>
+                <GradientStop Color="#FFEDD8D8" Offset="1"/>
+            </LinearGradientBrush>
+        </Grid.Background>
+        <Border Height="270" Width="450">
+            <StackPanel>
+       
+        <Label Content="Введите логин и пароль!"  FontSize="15" HorizontalContentAlignment="Left" VerticalContentAlignment="Center" 
+               Grid.Column="0" Grid.Row="1"/>
+                <Label Content="Логин"  FontSize="15" HorizontalContentAlignment="Left" VerticalContentAlignment="Center" 
+        Grid.Column="0" Grid.Row="2"/>
+                <TextBox  x:Name="textBoxLogin" Margin="10,10" FontSize="15" 
+                  HorizontalContentAlignment="Left" VerticalContentAlignment="Center" 
+                 ToolTip="Введите логин"/>
+                
+                <Label Content="Пароль"  FontSize="15" HorizontalContentAlignment="Left" VerticalContentAlignment="Center" />
+                <PasswordBox x:Name="textBoxPass"  Margin="10,10" FontSize="15" 
+              HorizontalContentAlignment="Left" VerticalContentAlignment="Center" 
+              ToolTip="Введите пароль"/>
+                
+                <Button Content="Регистрация" Margin="10,10" FontSize="15" HorizontalContentAlignment="Center" 
+                        VerticalContentAlignment="Center" 
+                       Grid.Column="0"  Click="CredButton_Click" />
+
+        <Button Content="Войти" Margin="10,10" FontSize="15" HorizontalContentAlignment="Center" 
+                VerticalContentAlignment="Center" 
+              Click="AutButton_Click" />
+            </StackPanel>
+        </Border>
+    </Grid>
+</Window>

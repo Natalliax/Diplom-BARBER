@@ -1,0 +1,77 @@
+﻿<Window x:Class="Proekt_BarBer.Report"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Proekt_BarBer"
+        mc:Ignorable="d"
+      Title="Отчет по записям" Height="450" Width="800">
+
+    <Window.Resources>
+        <Style TargetType="{x:Type Button}">
+            <Setter Property="Margin" Value="5,2"/>
+        </Style>
+    </Window.Resources>
+    <Grid >
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="200"></ColumnDefinition>
+
+            <ColumnDefinition></ColumnDefinition>
+        </Grid.ColumnDefinitions>
+        <Grid Grid.Column="0" Background="{DynamicResource {x:Static SystemColors.ActiveBorderBrushKey}}">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="25"/>
+                <RowDefinition Height="45"/>
+                <RowDefinition Height="45"/>
+                <RowDefinition Height="45"/>
+                <RowDefinition Height="45"/>
+                <RowDefinition Height="45"/>
+                <RowDefinition Height="45"/>
+                <RowDefinition Height="45"/>
+                <RowDefinition/>
+            </Grid.RowDefinitions>
+            <Label Content="дата" Grid.Row="1" Padding="10,0" Margin="0,0,0,26" ></Label>
+            <Label Content="время" Grid.Row="2" Padding="10,0" Margin="0,0,0,26" ></Label>
+            <Label Content="клиент" Grid.Row="3" Padding="10,0" Margin="0,0,0,26" ></Label>
+            <Label Content="услуга" Grid.Row="4" Padding="10,0" Margin="0,0,0,26" ></Label>
+            <Label Content="мастер" Grid.Row="5" Padding="10,0" Margin="0,0,0,26" ></Label>
+            <Label Content="материал" Grid.Row="6" Padding="10,0" Margin="0,0,0,26" ></Label>
+
+            <TextBox x:Name="dt" Grid.Row="1" Text="" FontSize="16" Margin="10,16,10,4" TextChanged="textFilterChanged"/>
+            <TextBox x:Name="tm" Grid.Row="2" Text="" FontSize="16" Margin="10,16,10,4" TextChanged="textFilterChanged"/>
+            <TextBox x:Name="person" Grid.Row="3" Text="" FontSize="16" Margin="10,16,10,4" TextChanged="textFilterChanged"/>
+            <ComboBox x:Name="ns" Grid.Row="4" Text="" FontSize="16" Margin="10,16,10,4" Background="White" SelectionChanged="comboFilterChanges"/>
+            <ComboBox x:Name="ms" Grid.Row="5" Text="" FontSize="16" Margin="10,16,10,4" Background="White" SelectionChanged="comboFilterChanges"/>
+            <ComboBox x:Name="mat" Grid.Row="6" Text="" FontSize="16" Margin="10,16,10,4" Background="White" SelectionChanged="comboFilterChanges"/>
+
+            <Button Content="Закрыть" Grid.Row="7" FontSize="16" Margin="10,16,10,4" Background="White" Click="Button_Click"/>
+            <Button Content="Печать" Grid.Row="8" FontSize="16" Margin="10,16,10,4" Background="White" Click="ButtonExp_Click"/>
+
+        </Grid>
+        <DataGrid x:Name="dGrid" Grid.Column="1" ItemsSource="{Binding}" AutoGenerateColumns ="False"
+                  RowHeaderWidth="50"  IsReadOnly="True">
+            <DataGrid.Background>
+                <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+                    <GradientStop Color="#FFE9DEDE" Offset="0.003"/>
+                    <GradientStop Color="#FFEDD8D8" Offset="1"/>
+                </LinearGradientBrush>
+            </DataGrid.Background>
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="Дата"  Binding="{Binding Date}" >
+                    <DataGridTextColumn.CellStyle>
+                        <Style>
+                            <Setter Property="TextBlock.TextAlignment" Value="Right"/>
+                        </Style>
+                    </DataGridTextColumn.CellStyle>
+                </DataGridTextColumn>
+
+                <DataGridTextColumn Header="Время" Binding="{Binding Time}"/>
+                <DataGridTextColumn Header="Клиент" Binding="{Binding Name}"/>
+                <DataGridTextColumn Header="Услуга" Binding="{Binding NameService}"/>
+                <DataGridTextColumn Header="Мастер" Binding="{Binding MastSchedule}"/>
+                <DataGridTextColumn Header="Стоимость" Binding="{Binding Price, Mode=TwoWay}"/>
+            </DataGrid.Columns>
+
+        </DataGrid>
+    </Grid>
+</Window>
