@@ -35,12 +35,12 @@
            
             <DataGrid.Columns>
 
-                <DataGridTextColumn Header="Дата" Binding="{Binding Date}"/>
-                <DataGridTextColumn Header="Время" Binding="{Binding Time}"/>
-                <DataGridTextColumn Header="Клиент" Binding="{Binding Name}"/>
-                <DataGridTextColumn Header="Услуга" Binding="{Binding NameService}"/>
-                <DataGridTextColumn Header="Мастер" Binding="{Binding MastSchedule}"/>
-                <DataGridTextColumn Header="Стоимость" Binding="{Binding Price, Mode=TwoWay}"/>
+                <DataGridTextColumn Header="Дата" Binding="{Binding Date}" Width ="80"/>
+                <DataGridTextColumn Header="Время" Binding="{Binding Time}" Width="80"/>
+                <DataGridTextColumn Header="Клиент" Binding="{Binding Name}" Width="80"/>
+                <DataGridTextColumn Header="Услуга" Binding="{Binding NameService}" Width="120"/>
+                <DataGridTextColumn Header="Мастер" Binding="{Binding MastSchedule}" Width="80"/>
+                <DataGridTextColumn Header="Стоимость" Binding="{Binding Price, Mode=TwoWay}" Width="80"/>
             </DataGrid.Columns>
            
         </DataGrid>
@@ -97,8 +97,8 @@
 
                     <Label Content="Ф.И.О."  Grid.Row="1" Grid.Column="0"  FontSize="20" FontFamily="Century Schoolbook" HorizontalAlignment ="Center" />
                     <TextBox x:Name="textBoxName" Grid.Row="1" Grid.ColumnSpan="2"  ToolTip="Имя"
-              HorizontalAlignment="Center" VerticalAlignment="Center" Width="250" Height="30" Grid.Column="1" Text="{Binding Path=Name}" 
-              TextChanged="textBoxName_TextChanged" />
+                             HorizontalAlignment="Center" VerticalAlignment="Center" Width="250" Height="30" 
+                             Grid.Column="1" Text="{Binding Path=Name}"/>
 
                     <Label Content="Дата рождения"  Grid.Row="1"   FontSize="20" Grid.Column="3" FontFamily="Century Schoolbook" HorizontalAlignment ="Center"/>
                     <DatePicker x:Name="textBoxAge"  Grid.Row="1"  ToolTip="Дата рождения" 
@@ -109,7 +109,7 @@
 
 
                     <CheckBox x:Name="checkBoxViz" Grid.Row="2" Grid.Column="3" Content="Визит" Height="30" Width="100" FontSize="20"
-               HorizontalAlignment="Left" VerticalAlignment="Top" Checked="checkBoxViz_Checked" FontFamily="Century Schoolbook" Margin="24,10,0,0"/>
+               HorizontalAlignment="Left" VerticalAlignment="Top"  FontFamily="Century Schoolbook" Margin="24,10,0,0"/>
 
                     <Label Content="Дата визита"  Grid.Row="2" Grid.Column="0"  FontSize="20" FontFamily="Century Schoolbook" HorizontalAlignment ="Center" />
                     <DatePicker x:Name="textBoxDate" Grid.Row="2" Grid.ColumnSpan="2"  ToolTip="Дата визита" 
@@ -139,10 +139,7 @@
                     <ComboBox x:Name="textBoxMaster" Grid.Row="6" Grid.ColumnSpan="2"  ToolTip="Мастер"
               HorizontalAlignment="Center" VerticalAlignment="Center" Width="250" Height="30" Grid.Column="1" 
                           SelectionChanged="textBoxMaster_SelectionChanged" 
-                          SelectedItem ="{Binding Path = MastSchedule.Master}"
-                          SelectedValuePath="Id"
-                          SelectedValue="{Binding SelectedMasterId}"   
-                          DisplayMemberPath="Master"/>
+                             SelectedItem ="{Binding Path = MastSchedule.Master}"/>
 
                     <ComboBox x:Name="textBoxDis" DataContext="Скидка" Grid.Row="3"  ToolTip="Скидка клиенту" 
                     HorizontalAlignment="Center" VerticalAlignment="Center" 
@@ -158,11 +155,11 @@
 
                     <TextBox x:Name="Price1" Grid.Row="4"  ToolTip="Стоимость" 
               HorizontalAlignment="Center" VerticalAlignment="Center" 
-              Width="130" Height="30" Grid.Column="4" TextChanged="Price1_TextChanged" />
+              Width="130" Height="30" Grid.Column="4"/>
 
                     <TextBox x:Name="Price2" Grid.Row="5"   ToolTip="Стоимость"
               HorizontalAlignment="Center" VerticalAlignment="Center" 
-              Width="130" Height="30" Grid.Column="4" TextChanged="Price2_TextChanged" />
+              Width="130" Height="30" Grid.Column="4"/>
 
                     <Button Content="Очистить" Grid.Column="1" Grid.Row="7" Click="ButtonClear_Click" IsDefault="True" Margin="15,15,15,0" 
                             FontFamily="Century Schoolbook" 

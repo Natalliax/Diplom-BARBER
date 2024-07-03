@@ -1,19 +1,16 @@
 ﻿using Microsoft.Office.Interop.Excel;
-using Mysqlx.Crud;
-using Mysqlx.Resultset;
-using Org.BouncyCastle.Asn1.Crmf;
-using Org.BouncyCastle.Asn1.Nist;
-using Org.BouncyCastle.Asn1.X509;
 using Proekt_BarBer.Core;
 using System;
-using System.Collections.Generic;
 using System.Configuration;
+using System.Data;
 using System.Data.Entity;
 using System.Data.Entity.Migrations;
 using System.Data.SqlClient;
+using System.Diagnostics.Metrics;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
+using Type = System.Type;
 using Window = System.Windows.Window;
 
 namespace Proekt_BarBer
@@ -33,10 +30,9 @@ namespace Proekt_BarBer
 
 			textBoxUsl.ItemsSource = App.Db.NameServices.ToList();
 			Material.ItemsSource = App.Db.Materials.ToList();
-			textBoxMaster.ItemsSource = App.Db.MastSchedules.ToList();
-			textBoxTime.ItemsSource = App.Db.MastSchedules.ToList();
+            textBoxMaster.ItemsSource = App.Db.MastSchedules.Select(m => m.Master).Distinct().ToList(); //comboBox - заполнение данными (список мастеров без повторений)
+            textBoxTime.ItemsSource = App.Db.MastSchedules.ToList();
 			textBoxDis.ItemsSource = App.Db.DisInfo.ToList();
-
 		}
 
 		private void dGrid_Loaded(object sender, RoutedEventArgs e)
@@ -58,18 +54,10 @@ namespace Proekt_BarBer
 			textBoxDate.Text = selectedPr.Date;
 			textBoxTime.Text = selectedPr.Time;
 			textBoxUsl.Text = selectedPr.NameService.Usl;
-
-			
-
-           
-
-
-            Price.Text = Price.ToString();
-
+			textBoxMaster.Text = selectedPr?.MastSchedule?.Master ?? "";
+			Price.Text = Price.ToString();
 
 			App.Db.Persons.AddOrUpdate(selectedPr);
-
-
 			App.Db.SaveChanges();
 			dGrid.ItemsSource = null;
 			dGrid.ItemsSource = App.Db.Persons.ToList();
@@ -82,6 +70,8 @@ namespace Proekt_BarBer
 				Price.Text = (price1 + price2).ToString();
 			}
 		}
+
+		//Метод расчета скидки
 		private void Discount()
 		{
 			DateTime? birthday = textBoxAge.SelectedDate;
@@ -96,26 +86,20 @@ namespace Proekt_BarBer
 			}
 		}
 
-
-		private void textBoxName_TextChanged(object sender, TextChangedEventArgs e)
-		{
-
-		}
-
+		
+		//Вызов метода при расчете скидки при вводе даты записи
 		private void textBoxDate_TextChanged(object sender, SelectionChangedEventArgs e)
 		{
 			Discount();
 		}
-
-		private void textBoxAge_TextChanged(object sender, SelectionChangedEventArgs e)
+        //Вызов метода при расчете скидки при вводе даты рождения
+        private void textBoxAge_TextChanged(object sender, SelectionChangedEventArgs e)
 		{
 			Discount();
 		}
-
+		//Выбор услуги и применении скидки в случае день рождения
 		private void Usl_SelectionChanged(object sender, SelectionChangedEventArgs e)
 		{
-
-
 			if (textBoxUsl.SelectedItem is NameService ns)
 			{
 				Price1.Text = ns.Price.ToString("#0.00");
@@ -123,12 +107,10 @@ namespace Proekt_BarBer
 				if (textBoxDis.SelectedItem is DiscountInfo dis)
 				{
 					Price1.Text = (ns.Price - (ns.Price * dis.Persent)).ToString("#0.00");
-
 				}
-
 			}
 		}
-
+		//Выбор материал из таблицы Material
 		private void Material_SelectionChanged(object sender, SelectionChangedEventArgs e)
 		{
 			if (Material.SelectedItem is Material m)
@@ -137,48 +119,29 @@ namespace Proekt_BarBer
 
 			}
 		}
-
-        private HashSet<string> uniqueMasters = new HashSet<string>();
-
         private void textBoxMaster_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            string selectedMaster = textBoxMaster.SelectedItem?.ToString();
+            // Получаем выбранного мастера
+            var selectedMaster = textBoxMaster.SelectedItem as MastSchedule;
 
-            if (!string.IsNullOrEmpty(selectedMaster))
+            if (selectedMaster != null)
             {
-                // Проверьте, что выбранный мастер не повторяется
-                if (!uniqueMasters.Contains(selectedMaster))
-                {
-                    // Добавьте мастера в ComboBox
-                    textBoxMaster.Items.Add(selectedMaster);
+                
+                // Фильтруем данные по выбранному мастеру
+                var scheduleForSelectedMaster = MastSchedule.SelectedMasterTime(m => m.MasterId == selectedMaster.Id);
 
-                    // Добавьте мастера в коллекцию уникальных мастеров
-                    uniqueMasters.Add(selectedMaster);
-                }
+                // Получаем время конкретно для выбранного мастера (например, первая запись в расписании)
+                var selectedMasterTime = scheduleForSelectedMaster.FirstOrDefault()?.Time;
+
+                // Устанавливаем время в textboxTime
+                textBoxTime.Text = selectedMasterTime?.ToString("HH:mm");
             }
         }
-
-        private void checkBoxViz_Checked(object sender, RoutedEventArgs e)
-		{
-
-		}
-
-		private void Price1_TextChanged(object sender, TextChangedEventArgs e)
-		{
-
-		}
-
-
-		private void Price2_TextChanged(object sender, TextChangedEventArgs e)
-		{
-
-		}
-
 		private void textBoxTotal_TextChanged(object sender, TextChangedEventArgs e)
 		{
 
 		}
-
+		//Расчет стоимости при посещении
 		private void ButtonPrice_Click(object sender, RoutedEventArgs e)
 		{
 			if (checkBoxViz.IsChecked != false)
@@ -197,7 +160,7 @@ namespace Proekt_BarBer
 				MessageBox.Show("Вы не посетили нас (((");
 			}
 		}
-
+		//запись клиента
 		private void btnAdd_Click(object sender, RoutedEventArgs e)
 		{
 			dGrid.ItemsSource = null;
@@ -208,29 +171,26 @@ namespace Proekt_BarBer
 				Date = textBoxDate.Text,
 				Time = textBoxTime.Text,
 				NameService = (NameService)textBoxUsl.SelectedItem,
-				MastSchedule = (MastSchedule)textBoxMaster.SelectedItem,
-				Price = decimal.Parse(Price1.Text) + decimal.Parse(Price2.Text),
-
-
-
+				MastSchedule = App.Db.MastSchedules.FirstOrDefault(m => m.Master == textBoxMaster.Text),
+                Price = decimal.Parse(Price1.Text) + decimal.Parse(Price2.Text),
 			});
 			MessageBox.Show("Пациент успешно зарегистрирован!");
 
 			App.Db.SaveChanges();
 		}
-
+		//Вызов справочника расписания и скидки
 		private void btnSchedule_Click_1(object sender, RoutedEventArgs e)
 		{
 			Schedule schedule = new Schedule();
 			schedule.Show();
 		}
-
+		//Вызов отчета
 		private void btnReport_Click(object sender, RoutedEventArgs e)
 		{
 			Report report = new Report();
 			report.Show();
 		}
-
+		//Удаление записи 
 		private void btnDelete_Click(object sender, RoutedEventArgs e)
 		{
 			if (dGrid.SelectedItems.Count == 0)
@@ -246,15 +206,13 @@ namespace Proekt_BarBer
 			dGrid.ItemsSource = null;
 			dGrid.ItemsSource = App.Db.Persons.ToList();
 		}
-
-
-
+		//Вызов справочника услуг
 		private void btnService_Click(object sender, RoutedEventArgs e)
 		{
 			Service service = new Service();
 			service.Show();
 		}
-
+		//Изменение записи
 		private void btnEdit_Click(object sender, RoutedEventArgs e)
 		{
 			if (selectedPr != null)
@@ -263,7 +221,7 @@ namespace Proekt_BarBer
 				selectedPr.Date = textBoxDate.Text;
 				selectedPr.Time = textBoxTime.Text;
 				selectedPr.NameService = (NameService)textBoxUsl.SelectedItem;
-				selectedPr.MastSchedule = (MastSchedule)textBoxMaster.SelectedItem;
+				selectedPr.MastSchedule = App.Db.MastSchedules.FirstOrDefault(m => m.Master == textBoxMaster.Text);
 				Price.Text = Price.ToString();
 
 				App.Db.Persons.AddOrUpdate(selectedPr);
@@ -274,14 +232,11 @@ namespace Proekt_BarBer
 				dGrid.ItemsSource = App.Db.Persons.Local.ToBindingList();
 			}
 		}
-
-
-
 		private void Persent_TextChanged(object sender, TextChangedEventArgs e)
 		{
 
 		}
-
+		//Применение скидки
 		private void NameDis_SelectionChanged(object sender, SelectionChangedEventArgs e)
 		{
 			if (textBoxDis.SelectedItem is DiscountInfo dis)
@@ -289,7 +244,7 @@ namespace Proekt_BarBer
 				Persent.Text = dis.Persent.ToString("#0%");
 			}
 		}
-
+		//Кнопка очистить
 		public void ButtonClear_Click(object sender, RoutedEventArgs e)
 		{
 			textBoxName.Text = "";
@@ -304,14 +259,12 @@ namespace Proekt_BarBer
 			Price.Text = "";
 			Material.Text = "";
 			Persent.Text = "";
-
 		}
-
 		private void textBoxTime_SelectionChanged(object sender, SelectionChangedEventArgs e)
 		{
            
         }
-
+		//Вывод данные в табличную часть
 		private void btnExp_Click_1(object sender, RoutedEventArgs e)
 		{
 

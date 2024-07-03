@@ -33,10 +33,13 @@ namespace Proekt_BarBer
 			InitializeComponent();
 			MastSchedule mastschedule = new MastSchedule();
 			scheduleGrid.ItemsSource = App.Db.MastSchedules.ToList();
-
-			scheduleGrid.DataContext = mastschedule;
+            //stackpanelSchedule.DataContext = mastschedule;
+            scheduleGrid.DataContext = mastschedule;
 			stackpanelSchedule = new StackPanel();
-		}
+
+            
+
+        }
 
 		private void mGrid_Loaded(object sender, RoutedEventArgs e)
 		{
@@ -76,16 +79,16 @@ namespace Proekt_BarBer
 		{
 			scheduleGrid.ItemsSource = null;
 			scheduleGrid.ItemsSource = App.Db.MastSchedules.Local.ToBindingList();
-			App.Db.MastSchedules.Add(new MastSchedule
+			App.Db.MastSchedules.AddOrUpdate(new MastSchedule
 			{
 				Master = textBox1.Text,
 				Date = textBox2.Text,
 				Time = textBox3.Text,
 
 			});
-            App.Db.MastSchedules.AddOrUpdate(selectedSc);
+			
             App.Db.SaveChanges();
-		}
+        }
 
 		private void EditButton_Click_1(object sender, RoutedEventArgs e)
 		{
@@ -94,8 +97,6 @@ namespace Proekt_BarBer
 				selectedSc.Master = textBox1.Text;
 				selectedSc.Date = textBox2.Text;
 				selectedSc.Time = textBox3.Text;
-
-
 
 				App.Db.MastSchedules.AddOrUpdate(selectedSc);
 				App.Db.SaveChanges();

@@ -43,7 +43,8 @@ namespace Proekt_BarBer
         {
             serviceGrid.ItemsSource = null;
             serviceGrid.ItemsSource = App.Db.NameServices.Local.ToBindingList();
-            App.Db.NameServices.Add(new NameService { Usl = textBox1.Text, 
+            App.Db.NameServices.Add(new NameService { 
+                Usl = textBox1.Text, 
                 Price = decimal.Parse(textBox2.Text), 
                 Description = textBox3.Text, 
                 Timecomletion = textBox4.Text });
