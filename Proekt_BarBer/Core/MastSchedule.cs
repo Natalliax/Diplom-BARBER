@@ -22,7 +22,7 @@ namespace Proekt_BarBer.Core
 
 
 		public override string ToString() => Master;
-        internal static string SelectedMasterTime;
+        //internal static string SelectedMasterTime;
 
 
 

@@ -1,6 +1,8 @@
 ﻿using Microsoft.Office.Interop.Excel;
+using Org.BouncyCastle.Asn1.Cms;
 using Proekt_BarBer.Core;
 using System;
+using System.Collections.Generic;
 using System.Configuration;
 using System.Data;
 using System.Data.Entity;
@@ -12,6 +14,7 @@ using System.Windows;
 using System.Windows.Controls;
 using Type = System.Type;
 using Window = System.Windows.Window;
+
 
 namespace Proekt_BarBer
 {
@@ -31,7 +34,7 @@ namespace Proekt_BarBer
 			textBoxUsl.ItemsSource = App.Db.NameServices.ToList();
 			Material.ItemsSource = App.Db.Materials.ToList();
             textBoxMaster.ItemsSource = App.Db.MastSchedules.Select(m => m.Master).Distinct().ToList(); //comboBox - заполнение данными (список мастеров без повторений)
-            textBoxTime.ItemsSource = App.Db.MastSchedules.ToList();
+			textBoxTime.ItemsSource = App.Db.MastSchedules.ToList();
 			textBoxDis.ItemsSource = App.Db.DisInfo.ToList();
 		}
 
@@ -119,24 +122,18 @@ namespace Proekt_BarBer
 
 			}
 		}
-        private void textBoxMaster_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            // Получаем выбранного мастера
-            var selectedMaster = textBoxMaster.SelectedItem as MastSchedule;
+		private void textBoxMaster_SelectionChanged(object sender, SelectionChangedEventArgs e)
+		{
+			if (textBoxMaster.SelectedItem is MastSchedule selectedMaster)
+			{
+				// Получаем время конкретно для выбранного мастера 
+				var selectedMasterTime = selectedMaster.Time;
 
-            if (selectedMaster != null)
-            {
-                
-                // Фильтруем данные по выбранному мастеру
-                var scheduleForSelectedMaster = MastSchedule.SelectedMasterTime(m => m.MasterId == selectedMaster.Id);
+				// Устанавливаем время в textBoxTime
+				textBoxTime.Text = selectedMasterTime?.ToString();
 
-                // Получаем время конкретно для выбранного мастера (например, первая запись в расписании)
-                var selectedMasterTime = scheduleForSelectedMaster.FirstOrDefault()?.Time;
-
-                // Устанавливаем время в textboxTime
-                textBoxTime.Text = selectedMasterTime?.ToString("HH:mm");
-            }
-        }
+			}
+		}
 		private void textBoxTotal_TextChanged(object sender, TextChangedEventArgs e)
 		{
 
@@ -262,7 +259,8 @@ namespace Proekt_BarBer
 		}
 		private void textBoxTime_SelectionChanged(object sender, SelectionChangedEventArgs e)
 		{
-           
+			
+            
         }
 		//Вывод данные в табличную часть
 		private void btnExp_Click_1(object sender, RoutedEventArgs e)
@@ -318,5 +316,11 @@ namespace Proekt_BarBer
 
             excelApp.Visible = true;
         }
-	}
+
+        private void btnWag_Click_1(object sender, RoutedEventArgs e)
+        {
+			Wage wage = new Wage();
+			wage.Show();
+        }
+    }
 }
