@@ -1,18 +1,9 @@
 ﻿using Proekt_BarBer.Core;
 using Proekt_BarBer.Registr;
-using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
 using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
 
 namespace Proekt_BarBer
 {
@@ -32,50 +23,70 @@ namespace Proekt_BarBer
 			registration.Show();
 		}
 
-		private void AutButton_Click(object sender, RoutedEventArgs e)
-		{
-			string login = textBoxLogin.Text.Trim();
-			string pass = textBoxPass.Password.Trim();
-
-
-			if (login.Length < 5)
-			{
-				textBoxLogin.ToolTip = "Это поле введено не корректно";
-				textBoxLogin.Background = Brushes.Beige;
-			}
-			else if (pass.Length < 5)
-			{
-				textBoxPass.ToolTip = "Это поле введено не корректно";
-				textBoxPass.Background = Brushes.Beige;
-			}
-			else
-			{
-				textBoxLogin.ToolTip = "";
-				textBoxLogin.Background = Brushes.Beige;
-				textBoxPass.ToolTip = "";
-				textBoxPass.Background = Brushes.Beige;
-
-				Users AutUser = null;
-				using (MyContext db = new MyContext())
-				{
-					AutUser = db.Users.Where(b => b.login == login && b.pass == pass).FirstOrDefault();
-				}
-
-				if (AutUser != null)
-
-					MessageBox.Show($"{Application.Current.MainWindow.Title}");
+        private void AutButton_Click(object sender, RoutedEventArgs e)
+        {
+            string login = textBoxLogin.Text.Trim();
+            string pass = textBoxPass.Password.Trim();
 
 
 
-				else
-					MessageBox.Show("Пользователь ненайден");
 
-			}
-			MainWindow mainWindow = new MainWindow();
-			this.Close();
-			mainWindow.ShowDialog();
+            if (login.Length < 5)
+            {
+                textBoxLogin.ToolTip = "Это поле введено не корректно";
+                textBoxLogin.Background = Brushes.Beige;
+            }
+            else if (pass.Length < 5)
+            {
+                textBoxPass.ToolTip = "Это поле введено не корректно";
+                textBoxPass.Background = Brushes.Beige;
+            }
+            else
+            {
+                textBoxLogin.ToolTip = "";
+                textBoxLogin.Background = Brushes.Beige;
+                textBoxPass.ToolTip = "";
+                textBoxPass.Background = Brushes.Beige;
 
-		}
-	}
+                Users AutUser = null;
+                using (MyContext db = new MyContext())
+                {
+                    AutUser = db.Users.Where(b => b.login == login && b.pass == pass).FirstOrDefault();
+                }
+
+                if (AutUser != null)
+                {
+                    MessageBox.Show("Пользователь найден");
+                    MainWindow mainWindow = new MainWindow();
+                    mainWindow.Show();
+                    this.Close();
+                }
+                else
+                {
+                    MessageBox.Show("Пользователь не найден");
+                }
+            }
+            //MainWindow mainWindow = new MainWindow();
+            //	this.Close();
+            ////mainWindow.ShowDialog();
+
+        }
+
+        
+
+        private void textBoxPass_PasswordChanged(object sender, TextChangedEventArgs e)
+        {
+
+
+            Button2.IsEnabled = !string.IsNullOrEmpty(textBoxPass.Password);
+
+
+        }
+
+        private void textBoxLogin_TextChanged_1(object sender, TextChangedEventArgs e)
+        {
+            Button2.IsEnabled = !string.IsNullOrEmpty(textBoxLogin.Text) || !string.IsNullOrEmpty(textBoxPass.Password);
+        }
+    }
 }
 

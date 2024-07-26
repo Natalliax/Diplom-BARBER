@@ -117,6 +117,12 @@
     <Reference Include="WindowsBase" />
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
+    <Reference Include="xunit.abstractions, Version=2.0.0.0, Culture=neutral, PublicKeyToken=8d05b1bb7a6fdb6c, processorArchitecture=MSIL">
+      <HintPath>..\packages\xunit.abstractions.2.0.3\lib\net35\xunit.abstractions.dll</HintPath>
+    </Reference>
+    <Reference Include="xunit.core, Version=2.9.0.0, Culture=neutral, PublicKeyToken=8d05b1bb7a6fdb6c, processorArchitecture=MSIL">
+      <HintPath>..\packages\xunit.extensibility.core.2.9.0\lib\net452\xunit.core.dll</HintPath>
+    </Reference>
     <Reference Include="ZstdSharp, Version=0.7.1.0, Culture=neutral, PublicKeyToken=8d151af33a4ad5cf, processorArchitecture=MSIL">
       <HintPath>..\packages\ZstdSharp.Port.0.7.1\lib\net461\ZstdSharp.dll</HintPath>
     </Reference>
@@ -126,6 +132,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Core\Cal.cs" />
     <Compile Include="Core\DiscountInfo.cs" />
     <Compile Include="Core\Material.cs" />
     <Compile Include="Core\MyContext.cs" />
@@ -236,7 +243,7 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <SplashScreen Include="1.JPG" />
+    <SplashScreen Include="Files\1.JPG" />
   </ItemGroup>
   <ItemGroup>
     <COMReference Include="Microsoft.Office.Core">
@@ -266,6 +273,33 @@
       <Isolated>False</Isolated>
       <EmbedInteropTypes>True</EmbedInteropTypes>
     </COMReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Files\01.jpg" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Files\03.jpg" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Files\04.jpeg" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Files\05.jpg" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Files\06.jpg" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Files\07.jpg" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Files\08.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Files\09.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Files\11.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">

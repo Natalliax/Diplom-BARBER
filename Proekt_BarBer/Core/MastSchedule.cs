@@ -18,13 +18,9 @@ namespace Proekt_BarBer.Core
 		public string Master { get; set; }
 		public string Date { get; set; }
 		public string Time{ get; set; }
+        public bool IsRegistered { get; set; } // Новое свойство
 
 
-
-		public override string ToString() => Master;
-        //internal static string SelectedMasterTime;
-
-
-
+        public override string ToString() => Master;
     }
 }

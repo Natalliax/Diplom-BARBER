@@ -2,6 +2,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Configuration;
 using System.Data.Entity;
 using System.Data.Entity.Migrations;
@@ -27,7 +28,9 @@ namespace Proekt_BarBer
 	public partial class Schedule : Window
 	{
 
-		public Schedule()
+      
+
+        public Schedule()
 		{
 
 			InitializeComponent();
@@ -36,24 +39,17 @@ namespace Proekt_BarBer
             //stackpanelSchedule.DataContext = mastschedule;
             scheduleGrid.DataContext = mastschedule;
 			stackpanelSchedule = new StackPanel();
-
-            
-
         }
 
-		private void mGrid_Loaded(object sender, RoutedEventArgs e)
+
+        private void mGrid_Loaded(object sender, RoutedEventArgs e)
 		{
 			SqlConnection sqlConnection = new SqlConnection(ConfigurationManager.ConnectionStrings["DefaultConnection"].ConnectionString);
 			sqlConnection.Open();
 
 		}
 
-
-		
-
 		MastSchedule selectedSc = null;
-
-		
 
 		private void scheduleGrid_SelectionChanged(object sender, SelectionChangedEventArgs e)
 		{
@@ -64,30 +60,31 @@ namespace Proekt_BarBer
 			textBox1.Text = selectedSc.Master;
 			textBox2.Text = selectedSc.Date;
 			textBox3.Text = selectedSc.Time;
-
-           
-
+			
             App.Db.MastSchedules.AddOrUpdate(selectedSc);
-
-
 			App.Db.SaveChanges();
-			scheduleGrid.ItemsSource = null;
 			scheduleGrid.ItemsSource = App.Db.MastSchedules.ToList();
 		}
 
 		private void AddButton_Click(object sender, RoutedEventArgs e)
 		{
-			scheduleGrid.ItemsSource = null;
-			scheduleGrid.ItemsSource = App.Db.MastSchedules.Local.ToBindingList();
-			App.Db.MastSchedules.AddOrUpdate(new MastSchedule
-			{
-				Master = textBox1.Text,
-				Date = textBox2.Text,
-				Time = textBox3.Text,
 
-			});
-			
+            var newSchedule = new MastSchedule
+            {
+                Master = textBox1.Text,
+                Date = textBox2.Text,
+                Time = textBox3.Text,
+				IsRegistered = true,
+				
+            };
+
+            App.Db.MastSchedules.AddOrUpdate(newSchedule);
             App.Db.SaveChanges();
+
+          
+            // Обновляем DataGrid
+            scheduleGrid.ItemsSource = null;
+            scheduleGrid.ItemsSource = App.Db.MastSchedules.Local.ToBindingList();
         }
 
 		private void EditButton_Click_1(object sender, RoutedEventArgs e)
@@ -97,6 +94,7 @@ namespace Proekt_BarBer
 				selectedSc.Master = textBox1.Text;
 				selectedSc.Date = textBox2.Text;
 				selectedSc.Time = textBox3.Text;
+				
 
 				App.Db.MastSchedules.AddOrUpdate(selectedSc);
 				App.Db.SaveChanges();
@@ -115,6 +113,7 @@ namespace Proekt_BarBer
 			if (MessageBox.Show("Вы уверены?", "Удалить запись?", MessageBoxButton.YesNo) == MessageBoxResult.No)
 				return;
 			App.Db.MastSchedules.Remove(selectedSc);
+			
 			App.Db.SaveChanges();
 			scheduleGrid.ItemsSource = null;
 			scheduleGrid.ItemsSource = App.Db.MastSchedules.Local.ToBindingList();
@@ -128,7 +127,7 @@ namespace Proekt_BarBer
 		private void DisButton_Click(object sender, RoutedEventArgs e)
 		{
 			Dis dis = new Dis();
-			dis.Show();
+			dis.ShowDialog();
 
 		}
 	}

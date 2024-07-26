@@ -6,37 +6,22 @@
         xmlns:local="clr-namespace:Proekt_BarBer"
         mc:Ignorable="d"
         Title="Вход в систему" Height="600" Width="800" WindowStartupLocation="CenterScreen" WindowState="Maximized">
-    <Grid>
-        <Grid.Background>
-            <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
-                <GradientStop Color="#FFE9DEDE" Offset="0.003"/>
-                <GradientStop Color="#FFEDD8D8" Offset="1"/>
-            </LinearGradientBrush>
-        </Grid.Background>
-        <Border Height="270" Width="450">
-            <StackPanel>
-       
-        <Label Content="Введите логин и пароль!"  FontSize="15" HorizontalContentAlignment="Left" VerticalContentAlignment="Center" 
-               Grid.Column="0" Grid.Row="1"/>
-                <Label Content="Логин"  FontSize="15" HorizontalContentAlignment="Left" VerticalContentAlignment="Center" 
-        Grid.Column="0" Grid.Row="2"/>
-                <TextBox  x:Name="textBoxLogin" Margin="10,10" FontSize="15" 
-                  HorizontalContentAlignment="Left" VerticalContentAlignment="Center" 
-                 ToolTip="Введите логин"/>
-                
-                <Label Content="Пароль"  FontSize="15" HorizontalContentAlignment="Left" VerticalContentAlignment="Center" />
-                <PasswordBox x:Name="textBoxPass"  Margin="10,10" FontSize="15" 
-              HorizontalContentAlignment="Left" VerticalContentAlignment="Center" 
-              ToolTip="Введите пароль"/>
-                
-                <Button Content="Регистрация" Margin="10,10" FontSize="15" HorizontalContentAlignment="Center" 
-                        VerticalContentAlignment="Center" 
-                       Grid.Column="0"  Click="CredButton_Click" />
-
-        <Button Content="Войти" Margin="10,10" FontSize="15" HorizontalContentAlignment="Center" 
-                VerticalContentAlignment="Center" 
-              Click="AutButton_Click" />
-            </StackPanel>
+    <Grid Background="White">
+        <Border Height="350" Width="550">
+            <Grid>
+                <Grid.Background>
+                    <ImageBrush ImageSource="pack://application:,,,/Files/11.png" />
+                </Grid.Background>
+                <StackPanel Margin="10">
+                    <Label Content="Введите логин и пароль!" FontSize="20" HorizontalContentAlignment="Left" VerticalContentAlignment="Center" Foreground="#FF0B0B0B" FontWeight="Bold"/>
+                    <Label Content="Логин" FontSize="20" HorizontalContentAlignment="Left" VerticalContentAlignment="Center" Foreground="#FF111111" FontWeight="Bold"/>
+                    <TextBox x:Name="textBoxLogin" Margin="10,10" FontSize="20" HorizontalContentAlignment="Left" VerticalContentAlignment="Center" ToolTip="Введите логин" TextChanged="textBoxLogin_TextChanged_1"/>
+                    <Label Content="Пароль" FontSize="20" HorizontalContentAlignment="Left" VerticalContentAlignment="Center" Foreground="#FF100F0F" FontWeight="Bold"/>
+                    <PasswordBox x:Name="textBoxPass" Margin="10,10" FontSize="20" HorizontalContentAlignment="Left" VerticalContentAlignment="Center" ToolTip="Введите пароль"/>
+                    <Button Content="Регистрация" Margin="10,10" FontSize="20" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Click="CredButton_Click"/>
+                    <Button x:Name="Button2" Content="Войти" Margin="10,10" FontSize="20" IsEnabled="False" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Click="AutButton_Click"/>
+                </StackPanel>
+            </Grid>
         </Border>
     </Grid>
 </Window>

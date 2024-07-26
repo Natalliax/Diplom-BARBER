@@ -12,7 +12,10 @@ namespace Proekt_BarBer.Core
         public string Date { get; set; }
         public string Time { get; set; }
         public string Name { get; set; }
-        public decimal Price { get; set; }
+
+        public string Price1 { get; set; }
+        public string Price2 { get; set; }
+        public string Price { get; set; }
 		
 		public virtual DiscountInfo DiscountInfo { get; set; }
        
@@ -24,6 +27,7 @@ namespace Proekt_BarBer.Core
         public virtual Order Order { get; set; }
 
         public virtual MastSchedule MastSchedule{ get; set; }
+       
 
 
     }

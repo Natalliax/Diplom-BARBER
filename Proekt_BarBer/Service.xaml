@@ -5,17 +5,13 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Proekt_BarBer"
         mc:Ignorable="d"
-        Title="Service" Height="450" Width="800">
+         Title="Справочник услуг" Height="450" Width="800"
+        WindowStartupLocation="CenterScreen" 
+        MinWidth="800"
+        MinHeight="400"
+        ResizeMode="CanResizeWithGrip">
     <Window.Resources>
-        <Style TargetType="TextBox">
-            <Style.Triggers>
-                <Trigger Property="Validation.HasError" Value="True">
-                    <Setter Property="ToolTip" Value="{Binding RelativeSource= {RelativeSource Self}, 
-             Path=(Validation.Errors)[0].ErrorContent}"/>
-                    <Setter Property="Foreground" Value="DarkRed"/>
-                </Trigger>
-            </Style.Triggers>
-        </Style>
+       
     </Window.Resources>
     <Grid x:Name="Grid" Margin="10,0,0,7" Loaded="Grid_Loaded">
         <Grid.Background>
@@ -24,52 +20,50 @@
                 <GradientStop Color="#FFEDD8D8" Offset="1"/>
             </LinearGradientBrush>
         </Grid.Background>
-        <StackPanel x:Name="stackButtons" Background="#FFCBC6C6" Margin="0,0,714,0" >
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="200"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
 
-            <Button x:Name="btnAdd"  Margin="10 10" Click="btnAdd_Click" >
-                Добавить</Button>
-
-            <Button x:Name="btnDelete"  Margin="10 10" Click="btnDelete_Click">
-                Удалить</Button>
-
-            <Button x:Name="btnEdit"  RenderTransformOrigin="0.576,3.112" Margin="10 10" Click="btnEdit_Click">
-                Изменить</Button>
-
-            <Button x:Name="btnClose"  RenderTransformOrigin="0.576,3.112" Margin="10 10" Click="btnClose_Click" >
-                Закрыть</Button>
+        <StackPanel x:Name="stackButtons"  Margin="0,0,10,0" Grid.Row="0" Grid.Column="0">
+            <Button x:Name="btnAdd" Margin="10" Click="btnAdd_Click">Добавить</Button>
+            <Button x:Name="btnDelete" Margin="10" Click="btnDelete_Click">Удалить</Button>
+            <Button x:Name="btnEdit" Margin="10" Click="btnEdit_Click">Изменить</Button>
+            <Button x:Name="btnClose" Margin="10" Click="btnClose_Click">Закрыть</Button>
         </StackPanel>
-        
-        <DataGrid x:Name="serviceGrid"  AutoGenerateColumns ="False" Margin="76,206,10,0"
-                  ItemsSource="{Binding}" SelectionChanged="serviceGrid_SelectionChanged">
-            <DataGrid.Columns>
 
-                <DataGridTextColumn Binding="{Binding Usl}" Header="Usl" Width="130"/>
-                <DataGridTextColumn Binding="{Binding Price}" Header="Price" Width="130"/>
-                <DataGridTextColumn Binding="{Binding Description}" Header="Description" Width="130"/>
-                <DataGridTextColumn Binding="{Binding Timecomletion}" Header="Timecomletion" Width="130"/>
-            </DataGrid.Columns>
-        </DataGrid>
-        <StackPanel x:Name="stackpanelService" DockPanel.Dock="Top" Background="LightSkyBlue" Margin="76,0,0,221" >
-
+        <StackPanel x:Name="stackpanelService"  Margin="10,0,10,10" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2">
             <StackPanel Orientation="Horizontal">
                 <Label Width="200" Margin="10">Наименование услуги</Label>
-                <TextBox x:Name="textBox1" Width="200" Margin="10" Text="{Binding Path=Usl}" ></TextBox>
+                <TextBox x:Name="textBox1" Width="200" Margin="10" Text="{Binding Path=Usl}"/>
             </StackPanel>
-
             <StackPanel Orientation="Horizontal">
                 <Label Width="200" Margin="10">Стоимость</Label>
-                <TextBox x:Name="textBox2" Width="200" Margin="10" Text="{Binding Path=Price}"></TextBox>
+                <TextBox x:Name="textBox2" Width="200" Margin="10" Text="{Binding Path=Price}"/>
             </StackPanel>
-
             <StackPanel Orientation="Horizontal">
                 <Label Width="200" Margin="10">Описание</Label>
-                <TextBox x:Name="textBox3" Width="400" Margin="10" Text="{Binding Path=Description}" ></TextBox>
+                <TextBox x:Name="textBox3" Width="400" Margin="10" Text="{Binding Path=Description}"/>
             </StackPanel>
-
             <StackPanel Orientation="Horizontal">
                 <Label Width="200" Margin="10">Время исполнения</Label>
-                <TextBox x:Name="textBox4" Width="400" Margin="10" Text="{Binding Path=Timecomletion}"></TextBox>
+                <TextBox x:Name="textBox4" Width="400" Margin="10" Text="{Binding Path=Timecomletion}"/>
             </StackPanel>
         </StackPanel>
+
+        <DataGrid x:Name="serviceGrid" AutoGenerateColumns="False" Margin="10,10,10,24" Grid.Row="0" Grid.Column="1"
+                  ItemsSource="{Binding}" SelectionChanged="serviceGrid_SelectionChanged">
+           
+            <DataGrid.Columns>
+                <DataGridTextColumn Binding="{Binding Usl}" Header="Наименование услуги" Width="130"/>
+                <DataGridTextColumn Binding="{Binding Price}" Header="Стоимость" Width="130"/>
+                <DataGridTextColumn Binding="{Binding Description}" Header="Описание" Width="130"/>
+                <DataGridTextColumn Binding="{Binding Timecomletion}" Header="Время исполнения" Width="130"/>
+            </DataGrid.Columns>
+        </DataGrid>
     </Grid>
 </Window>

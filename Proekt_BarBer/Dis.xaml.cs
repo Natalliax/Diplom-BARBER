@@ -28,21 +28,12 @@ namespace Proekt_BarBer
 		public Dis()
 		{
 			InitializeComponent();
-			
 			DiscountInfo discountInfo = new DiscountInfo();
 			disGrid.ItemsSource = App.Db.DisInfo.ToList();
-
 			disGrid.DataContext = discountInfo;
 			stackpanelDis = new StackPanel();
 		}
 
-
-		private void pGrid_Loaded(object sender, RoutedEventArgs e)
-		{
-			SqlConnection sqlConnection = new SqlConnection(ConfigurationManager.ConnectionStrings["DefaultConnection"].ConnectionString);
-			sqlConnection.Open();
-
-		}
 		DiscountInfo selectedDs = null;
 		private void disGrid_SelectionChanged(object sender, SelectionChangedEventArgs e)
 		{
@@ -53,45 +44,30 @@ namespace Proekt_BarBer
 			textBox1.Text = selectedDs.NameDis;
 			textBox2.Text = selectedDs.Persent.ToString();
 			
-
-
-
 			App.Db.DisInfo.AddOrUpdate(selectedDs);
-
-
 			App.Db.SaveChanges();
-			disGrid.ItemsSource = null;
 			disGrid.ItemsSource = App.Db.DisInfo.ToList();
 		}
 
-
-		private void textBox1_TextChanged(object sender, TextChangedEventArgs e)
-		{
-
-        }
-
-		private void textBox2_TextChanged(object sender, TextChangedEventArgs e)
-		{
-
-
-			
-		}
-
-		
-
 		private void AddButton_Click(object sender, RoutedEventArgs e)
 		{
-			disGrid.ItemsSource = null;
-			disGrid.ItemsSource = App.Db.DisInfo.Local.ToBindingList();
-			App.Db.DisInfo.Add(new DiscountInfo
+			var newDisInfo = new DiscountInfo
 			{
 				NameDis = textBox1.Text,
 				Persent = decimal.Parse(textBox2.Text),
 				
+			};
+            App.Db.DisInfo.AddOrUpdate(newDisInfo);
+            App.Db.SaveChanges();
 
-			});
-			App.Db.SaveChanges();
-		}
+            // Обновляем DataGrid
+            disGrid.ItemsSource = null;
+            disGrid.ItemsSource = App.Db.DisInfo.Local.ToBindingList();
+            disGrid.UpdateLayout(); // Добавлено обновление макета
+
+            // Обновляем только измененный элемент
+            disGrid.Items.Refresh();
+        }
 
 		private void EditButton_Click_1(object sender, RoutedEventArgs e)
 		{
@@ -100,7 +76,6 @@ namespace Proekt_BarBer
 				selectedDs.NameDis= textBox1.Text;
 				selectedDs.Persent = decimal.Parse(textBox2.Text);
 				
-
 				App.Db.DisInfo.AddOrUpdate(selectedDs);
 				App.Db.SaveChanges();
 				disGrid.SelectedItem = selectedDs;
@@ -109,18 +84,20 @@ namespace Proekt_BarBer
 				disGrid.ItemsSource = App.Db.DisInfo.Local.ToBindingList();
 			}
 		}
-
 		private void DelButton_Click_2(object sender, RoutedEventArgs e)
 		{
 			if (selectedDs == null) return;
 			if (System.Windows.MessageBox.Show("Вы уверены?", "Удалить запись?", MessageBoxButton.YesNo) == MessageBoxResult.No)
 				return;
 			App.Db.DisInfo.Remove(selectedDs);
+
 			App.Db.SaveChanges();
 			disGrid.ItemsSource = null;
 			disGrid.ItemsSource = App.Db.DisInfo.Local.ToBindingList();
-		}
-
+            disGrid.UpdateLayout(); // Добавлено обновление макета
+            // Обновляем только измененный элемент
+            disGrid.Items.Refresh();
+        }
 		private void ClosButton_Click_3(object sender, RoutedEventArgs e)
 		{
 			Close();

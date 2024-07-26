@@ -5,7 +5,8 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Proekt_BarBer"
         mc:Ignorable="d"
-            Title="Заработная плата" Height="800" Width="1200" WindowStartupLocation="CenterScreen" WindowState="Maximized">
+            Title="Заработная плата" Height="800" Width="1200" WindowStartupLocation="CenterScreen" 
+        WindowState="Maximized">
     <Window.Resources>
         <Style TargetType="{x:Type Button}">
             <Setter Property="Margin" Value="5,2"/>
@@ -18,6 +19,7 @@
 
             <ColumnDefinition></ColumnDefinition>
         </Grid.ColumnDefinitions>
+        
         <StackPanel x:Name="stackButtons" Background="#FFCBC6C6" Margin="10,10,896,10" >
 
             <Button x:Name="btnAdd"  Margin="10 10" Click="btnAdd_Click" Content="Ведомость" />
@@ -30,7 +32,7 @@
         </StackPanel>
 
 
-        <DataGrid x:Name="dGrid" ItemsSource="{Binding Persons}" 
+        <DataGrid x:Name="dGrid" ItemsSource="{Binding Persons}" SelectionChanged="dGrid_SelectionChanged"
               AutoGenerateColumns ="False"
               RowHeaderWidth="50"  IsReadOnly="True" Margin="109,10,11,10" Grid.ColumnSpan="2">
             <DataGrid.Background>
@@ -42,14 +44,15 @@
 
 
             <DataGrid.Columns>
-
-                <DataGridTextColumn Header="Дата начало расчета" Binding="{Binding Date}" Width ="150"/>
-                <DataGridTextColumn Header="Дата окнчания расчета" Binding="{Binding Time}" Width="150"/>
-                <DataGridTextColumn Header="Сумма за услуги" Binding="{Binding Name}" Width="120"/>
-                <DataGridTextColumn Header="Процент за услуги" Binding="{Binding NameService}" Width="130"/>
-                <DataGridTextColumn Header="Сумма за доп услуги" Binding="{Binding MastSchedule}" Width="130"/>
-                <DataGridTextColumn Header="Процент за доп услуги" Binding="{Binding Price, Mode=TwoWay}" Width="140"/>
-                <DataGridTextColumn Header="Итого за работу" Binding="{Binding Price, Mode=TwoWay}" Width="130"/>
+                <DataGridTextColumn Header="Мастер" Binding="{Binding Master}" Width="150"/>
+                <DataGridTextColumn Header="Дата начало расчета" Binding="{Binding Date1}" Width ="150"/>
+                <DataGridTextColumn Header="Дата окнчания расчета" Binding="{Binding Date2}" Width="150"/>
+                
+                <DataGridTextColumn Header="Сумма за услуги" Binding="{Binding Summa1}" Width="120"/>
+                <DataGridTextColumn Header="Процент за услуги" Binding="{Binding Procent1}" Width="130"/>
+                <DataGridTextColumn Header="Сумма за доп услуги" Binding="{Binding Summa2}" Width="130"/>
+                <DataGridTextColumn Header="Процент за доп услуги" Binding="{Binding Procent2}" Width="140"/>
+                <DataGridTextColumn Header="Итого за работу" Binding="{Binding Total}" Width="130"/>
             </DataGrid.Columns>
 
         </DataGrid>

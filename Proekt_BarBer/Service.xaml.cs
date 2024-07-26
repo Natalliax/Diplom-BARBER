@@ -1,4 +1,6 @@
-﻿using Proekt_BarBer.Core;
+﻿using Proekt_BarBer;
+using Proekt_BarBer.Core;
+using System.Collections.ObjectModel;
 using System.Configuration;
 using System.Data;
 using System.Data.Entity;
@@ -19,6 +21,8 @@ namespace Proekt_BarBer
     /// </summary>
     public partial class Service : Window
     {
+
+
         public Service()
         {
             InitializeComponent();
@@ -27,6 +31,7 @@ namespace Proekt_BarBer
             stackpanelService.DataContext = nameService;
             serviceGrid.DataContext = nameService;
             stackpanelService = new StackPanel();
+
 
         }
 
@@ -37,21 +42,29 @@ namespace Proekt_BarBer
             sqlConnection.Open();
 
         }
+        
 
 
         public void btnAdd_Click(object sender, RoutedEventArgs e)
         {
+
+            var newService = new NameService
+            {
+                Usl = textBox1.Text,
+                Price = decimal.Parse(textBox2.Text),
+                Description = textBox3.Text,
+                Timecomletion = textBox4.Text
+            };
+           
+
+
+            App.Db.NameServices.AddOrUpdate(newService);
+            App.Db.SaveChanges();
             serviceGrid.ItemsSource = null;
             serviceGrid.ItemsSource = App.Db.NameServices.Local.ToBindingList();
-            App.Db.NameServices.Add(new NameService { 
-                Usl = textBox1.Text, 
-                Price = decimal.Parse(textBox2.Text), 
-                Description = textBox3.Text, 
-                Timecomletion = textBox4.Text });
-            App.Db.SaveChanges();
 
+            
         }
-
 
         public void btnDelete_Click(object sender, RoutedEventArgs e)
         {
@@ -62,15 +75,14 @@ namespace Proekt_BarBer
             App.Db.SaveChanges();
             serviceGrid.ItemsSource = null;
             serviceGrid.ItemsSource = App.Db.NameServices.Local.ToBindingList();
-        }
+            serviceGrid.UpdateLayout(); // Добавлено обновление макета
 
+
+            // Обновляем только измененный элемент
+            serviceGrid.Items.Refresh();
+        }
         private void btnEdit_Click(object sender, RoutedEventArgs e)
         {
-            //SqlConnection sqlConnection = new SqlConnection(ConfigurationManager.ConnectionStrings["DefaultConnection"].ConnectionString);
-            //sqlConnection.Open();
-
-
-
             if (selectedNs != null)
             {
                 selectedNs.Usl = textBox1.Text;
@@ -78,23 +90,22 @@ namespace Proekt_BarBer
                 selectedNs.Description = textBox3.Text;
                 selectedNs.Timecomletion = textBox4.Text;
 
-
                 App.Db.NameServices.AddOrUpdate(selectedNs);
                 App.Db.SaveChanges();
                 serviceGrid.SelectedItem = selectedNs;
-
                 serviceGrid.ItemsSource = null;
                 serviceGrid.ItemsSource = App.Db.NameServices.Local.ToBindingList();
+
             }
         }
 
         private void btnClose_Click(object sender, RoutedEventArgs e)
-        {
+        { 
+           
             Close();
         }
 
         NameService selectedNs = null;
-
 
         private void serviceGrid_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
@@ -102,19 +113,33 @@ namespace Proekt_BarBer
 
             selectedNs = (NameService)serviceGrid.SelectedItem;
             if (selectedNs == null) return;
+
             textBox1.Text = selectedNs.Usl;
             textBox2.Text = selectedNs.Price.ToString();
             textBox3.Text = selectedNs.Description;
             textBox4.Text = selectedNs.Timecomletion;
+
             App.Db.NameServices.AddOrUpdate(selectedNs);
-
-
             App.Db.SaveChanges();
-            serviceGrid.ItemsSource = null;
+
             serviceGrid.ItemsSource = App.Db.NameServices.ToList();
 
-
+            // Обновляем только измененный элемент
+            serviceGrid.Items.Refresh();
         }
     }
 }
 
+//if (e.RemovedItems.Count > 0) return;
+
+//selectedSc = (MastSchedule)scheduleGrid.SelectedItem;
+//if (selectedSc == null) return;
+
+//textBox1.Text = selectedSc.Master;
+//textBox2.Text = selectedSc.Date;
+//textBox3.Text = selectedSc.Time;
+
+//App.Db.MastSchedules.AddOrUpdate(selectedSc);
+//App.Db.SaveChanges();
+
+//scheduleGrid.ItemsSource = App.Db.MastSchedules.ToList();

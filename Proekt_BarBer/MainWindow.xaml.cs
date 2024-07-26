@@ -1,18 +1,20 @@
-﻿using Microsoft.Office.Interop.Excel;
-using Org.BouncyCastle.Asn1.Cms;
-using Proekt_BarBer.Core;
+﻿using Proekt_BarBer.Core;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Configuration;
 using System.Data;
 using System.Data.Entity;
 using System.Data.Entity.Migrations;
 using System.Data.SqlClient;
-using System.Diagnostics.Metrics;
+using System.Globalization;
 using System.Linq;
+using System.Security.Policy;
+using System.Threading.Tasks;
+using System.Web.UI.WebControls;
 using System.Windows;
 using System.Windows.Controls;
-using Type = System.Type;
+using MessageBox = System.Windows.MessageBox;
 using Window = System.Windows.Window;
 
 
@@ -21,7 +23,7 @@ namespace Proekt_BarBer
 	/// <summary>
 	/// Логика взаимодействия для MainWindow.xaml
 	/// </summary>
-	public partial class MainWindow: Window
+	public partial class MainWindow : Window
 	{
 		public MainWindow()
 		{
@@ -33,86 +35,130 @@ namespace Proekt_BarBer
 
 			textBoxUsl.ItemsSource = App.Db.NameServices.ToList();
 			Material.ItemsSource = App.Db.Materials.ToList();
-            textBoxMaster.ItemsSource = App.Db.MastSchedules.Select(m => m.Master).Distinct().ToList(); //comboBox - заполнение данными (список мастеров без повторений)
+			textBoxMaster.ItemsSource = App.Db.MastSchedules.Select(m => m.Master).Distinct().ToList();  //comboBox - заполнение данными (список мастеров без повторений)
 			textBoxTime.ItemsSource = App.Db.MastSchedules.ToList();
 			textBoxDis.ItemsSource = App.Db.DisInfo.ToList();
+			textBoxDate.ItemsSource = App.Db.MastSchedules.Select(m => m.Date).Distinct().ToList();
 		}
 
-		private void dGrid_Loaded(object sender, RoutedEventArgs e)
+       
+        private void dGrid_Loaded(object sender, RoutedEventArgs e)
 		{
 			SqlConnection sqlConnection = new SqlConnection(ConfigurationManager.ConnectionStrings["DefaultConnection"].ConnectionString);
 			sqlConnection.Open();
-
 		}
 		Person selectedPr = null;
 
 		private void dGrid_SelectionChanged(object sender, SelectionChangedEventArgs e)
 		{
-
 			if (e.RemovedItems.Count > 0) return;
 
 			selectedPr = (Person)dGrid.SelectedItem;
 			if (selectedPr == null) return;
 			textBoxName.Text = selectedPr.Name;
 			textBoxDate.Text = selectedPr.Date;
-			textBoxTime.Text = selectedPr.Time;
+			textBoxTime.Text = selectedPr?.MastSchedule?.Time ?? "";
 			textBoxUsl.Text = selectedPr.NameService.Usl;
 			textBoxMaster.Text = selectedPr?.MastSchedule?.Master ?? "";
-			Price.Text = Price.ToString();
-
+			Material.Text = selectedPr.Material.Name;
+			Price1.Text = Price1.Text.ToString();
+			Price2.Text = Price2.Text.ToString();
+			Price.Text = Price.Text.ToString();
+		
 			App.Db.Persons.AddOrUpdate(selectedPr);
 			App.Db.SaveChanges();
-			dGrid.ItemsSource = null;
-			dGrid.ItemsSource = App.Db.Persons.ToList();
+            dGrid.ItemsSource = null;
+            dGrid.ItemsSource = App.Db.Persons.ToList();
 		}
 
 		private void CalculateTotalPrice()
 		{
-			if (decimal.TryParse(Price1.Text, out decimal price1) && decimal.TryParse(Price2.Text, out decimal price2))
+
+			if (decimal.TryParse(Price1.Text, out decimal pr1) && !string.IsNullOrEmpty(Price2.Text))
 			{
-				Price.Text = (price1 + price2).ToString();
+				if (decimal.TryParse(Price2.Text, out decimal pr2))
+				{
+					Price.Text = (pr1 + pr2).ToString();
+				}
+				else if (decimal.TryParse(Price1.Text, out decimal price1))
+				{
+					Price.Text = price1.ToString();
+				}
 			}
 		}
 
-		//Метод расчета скидки
+
+		//Вызов метода при расчете скидки при вводе даты записи
 		private void Discount()
 		{
-			DateTime? birthday = textBoxAge.SelectedDate;
-			DateTime? visitDate = textBoxDate.SelectedDate;
+            DateTime? birthday = textBoxAge.SelectedDate;
+            string visitDateStr = textBoxDate.Text; // Получаем строку даты
 
-			if (birthday.HasValue && visitDate.HasValue)
+            if (DateTime.TryParse(visitDateStr, out DateTime visitDate)) // Преобразуем строку в DateTime
+            {
+                if (birthday.HasValue)
+                {
+                    DateTime birthdayThisYear = new DateTime(visitDate.Year, birthday.Value.Month, birthday.Value.Day);
+                    DateTime twoDaysBefore = birthdayThisYear.AddDays(-2);
+                    DateTime twoDaysAfter = birthdayThisYear.AddDays(2);
+
+                    if (visitDate >= twoDaysBefore && visitDate <= twoDaysAfter)
+                    {
+                        MessageBox.Show("День рождения!");
+                    }
+                }
+            }
+        }
+
+		//Метод расчета скидки
+		private void textBoxDis_SelectionChanged(object sender, SelectionChangedEventArgs e)
+		{
+		
+			if (textBoxDis.SelectedItem is DiscountInfo dis)
 			{
-				if (birthday.Value.Month == visitDate.Value.Month && birthday.Value.Day == visitDate.Value.Day)
-				{
-					MessageBox.Show("День рождение!");
-				}
+				Persent.Text = dis.Persent.ToString("#0%");
 			}
+
+		}
+
+       
+
+        //Выбор услуги и применении скидки в случае день рождения
+        private void Usl_SelectionChanged(object sender, SelectionChangedEventArgs e)
+		{
+            
+
+            if (textBoxUsl.SelectedItem is NameService ns)
+			{
+				Price1.Text = ns.Price.ToString("#0.00");
+			
+			if (textBoxDis.SelectedItem is DiscountInfo dis)
+			{
+				Price1.Text = (ns.Price - (ns.Price * dis.Persent)).ToString("#0.00");
+			}
+		}
+
+	}
+
+		//Вызов метода при расчете скидки при вводе даты рождения
+		private void textBoxAge_TextChanged(object sender, SelectionChangedEventArgs e)
+		{
+			Discount();
 		}
 
 		
-		//Вызов метода при расчете скидки при вводе даты записи
-		private void textBoxDate_TextChanged(object sender, SelectionChangedEventArgs e)
-		{
-			Discount();
-		}
-        //Вызов метода при расчете скидки при вводе даты рождения
-        private void textBoxAge_TextChanged(object sender, SelectionChangedEventArgs e)
-		{
-			Discount();
-		}
-		//Выбор услуги и применении скидки в случае день рождения
-		private void Usl_SelectionChanged(object sender, SelectionChangedEventArgs e)
-		{
-			if (textBoxUsl.SelectedItem is NameService ns)
-			{
-				Price1.Text = ns.Price.ToString("#0.00");
 
-				if (textBoxDis.SelectedItem is DiscountInfo dis)
-				{
-					Price1.Text = (ns.Price - (ns.Price * dis.Persent)).ToString("#0.00");
-				}
-			}
+		private void Price_TextChanged(object sender, TextChangedEventArgs e)
+		{
+			CalculateTotalPrice();
 		}
+
+		private void btnWag_Click_1(object sender, RoutedEventArgs e)
+		{
+			Wage wage = new Wage();
+			wage.Show();
+		}
+
 		//Выбор материал из таблицы Material
 		private void Material_SelectionChanged(object sender, SelectionChangedEventArgs e)
 		{
@@ -122,65 +168,92 @@ namespace Proekt_BarBer
 
 			}
 		}
-		private void textBoxMaster_SelectionChanged(object sender, SelectionChangedEventArgs e)
+		public async Task<List<MastSchedule>> LoadRecordsFromDatabaseAsync(MyContext context)
 		{
-			if (textBoxMaster.SelectedItem is MastSchedule selectedMaster)
-			{
-				// Получаем время конкретно для выбранного мастера 
-				var selectedMasterTime = selectedMaster.Time;
-
-				// Устанавливаем время в textBoxTime
-				textBoxTime.Text = selectedMasterTime?.ToString();
-
-			}
+			var records = await context.MastSchedules.ToListAsync();
+			return records;
 		}
-		private void textBoxTotal_TextChanged(object sender, TextChangedEventArgs e)
-		{
 
-		}
-		//Расчет стоимости при посещении
-		private void ButtonPrice_Click(object sender, RoutedEventArgs e)
+		private async void UpdateFilteredRecords()
 		{
-			if (checkBoxViz.IsChecked != false)
+			if (textBoxDate.SelectedItem != null && textBoxMaster.SelectedItem != null)
 			{
-				try
+				using (var context = new MyContext())
 				{
-					CalculateTotalPrice();
-				}
-				catch (Exception ex)
-				{
-					MessageBox.Show(ex.ToString());
+					var personRecords = await LoadRecordsFromDatabaseAsync(context);
+					string dateString = textBoxDate.Text;
+
+					string dateFormat = "dd.MM.yyyy";
+
+					if (DateTime.TryParseExact(dateString, dateFormat, CultureInfo.InvariantCulture,
+						DateTimeStyles.None, out DateTime selectedDate))
+					{
+                        
+                            var filteredRecords = personRecords
+				  .Where(p => DateTime.Parse(p.Date) >= selectedDate &&
+							  p.Master.Equals(textBoxMaster.SelectedItem.ToString(), StringComparison.OrdinalIgnoreCase))
+									  .ToList();
+
+						var allMasterTimes = filteredRecords.Select(s => s.Time).ToList();
+
+						textBoxTime.ItemsSource = allMasterTimes;
+						textBoxTime.IsEnabled = true;
+					}
 				}
 			}
 			else
 			{
-				MessageBox.Show("Вы не посетили нас (((");
+				textBoxTime.IsEnabled = false;
 			}
 		}
-		//запись клиента
-		private void btnAdd_Click(object sender, RoutedEventArgs e)
-		{
-			dGrid.ItemsSource = null;
-			dGrid.ItemsSource = App.Db.Persons.Local.ToBindingList();
-			App.Db.Persons.Add(new Person
-			{
-				Name = textBoxName.Text,
-				Date = textBoxDate.Text,
-				Time = textBoxTime.Text,
-				NameService = (NameService)textBoxUsl.SelectedItem,
-				MastSchedule = App.Db.MastSchedules.FirstOrDefault(m => m.Master == textBoxMaster.Text),
-                Price = decimal.Parse(Price1.Text) + decimal.Parse(Price2.Text),
-			});
-			MessageBox.Show("Пациент успешно зарегистрирован!");
 
-			App.Db.SaveChanges();
+		private async void textBoxMaster_SelectionChanged(object sender, SelectionChangedEventArgs e)
+		{
+			UpdateFilteredRecords();
+
+			if (textBoxMaster.SelectedItem != null)
+			{
+				using (var context = new MyContext())
+				{
+					var personRecords = await LoadRecordsFromDatabaseAsync(context);
+
+					var selectedMaster = textBoxMaster.SelectedItem.ToString();
+
+					// Фильтруем записи для выбранного мастера
+					var recordsForSelectedMaster = personRecords
+						.Where(p => p.Master.Equals(selectedMaster, StringComparison.OrdinalIgnoreCase) && p.IsRegistered == true)
+						.ToList();
+
+					// Получаем уникальные даты работы для выбранного мастера
+					var uniqueDates = recordsForSelectedMaster
+
+						.Select(p => p.Date)
+						.Distinct()
+						.ToList();
+
+					// Устанавливаем источник данных для textBoxDate
+					textBoxDate.ItemsSource = uniqueDates;
+				}
+			}
 		}
+
+
+		//Расчет стоимости при посещении
+		private void ButtonPrice_Click(object sender, RoutedEventArgs e)
+		{
+			CalculateTotalPrice();
+		}
+
+
 		//Вызов справочника расписания и скидки
 		private void btnSchedule_Click_1(object sender, RoutedEventArgs e)
 		{
 			Schedule schedule = new Schedule();
-			schedule.Show();
+
+			schedule.ShowDialog();
 		}
+
+
 		//Вызов отчета
 		private void btnReport_Click(object sender, RoutedEventArgs e)
 		{
@@ -190,25 +263,50 @@ namespace Proekt_BarBer
 		//Удаление записи 
 		private void btnDelete_Click(object sender, RoutedEventArgs e)
 		{
-			if (dGrid.SelectedItems.Count == 0)
-				return;
-			if (MessageBox.Show("Вы уверены?", "Удалить запись?", MessageBoxButton.YesNo) == MessageBoxResult.No)
-				return;
-			for (int i = dGrid.SelectedItems.Count - 1; i >= 0; i--)
-			{
-				App.Db.Persons.Remove(dGrid.SelectedItems[i] as Person);
-			}
-			App.Db.SaveChanges();
+            if (selectedPr == null) return;
+            if (System.Windows.MessageBox.Show("Вы уверены?", "Удалить запись?", MessageBoxButton.YesNo) == MessageBoxResult.No)
+                return;
 
-			dGrid.ItemsSource = null;
-			dGrid.ItemsSource = App.Db.Persons.ToList();
-		}
+            // Сохраняем ссылку на MastSchedule перед удалением записи
+            var mastSchedule = selectedPr.MastSchedule;
+
+            // Удаляем запись из таблицы Person
+            App.Db.Persons.Remove(selectedPr);
+            App.Db.SaveChanges();
+
+            // Обновляем источник данных для DataGrid
+            dGrid.ItemsSource = null;
+            dGrid.ItemsSource = App.Db.Persons.Local.ToBindingList();
+
+            // Обновляем таблицу MastSchedule
+            if (mastSchedule != null)
+            {
+                // Проверяем, актуальна ли дата
+                DateTime scheduleDate;
+                if (DateTime.TryParse(mastSchedule.Date, out scheduleDate) && scheduleDate > DateTime.Now)
+                {
+                    mastSchedule.IsRegistered = true; // Устанавливаем IsRegistered в false
+                }
+                else
+                {
+                    App.Db.MastSchedules.Remove(mastSchedule); // Удаляем запись, если дата не актуальна
+                }
+
+                App.Db.SaveChanges();
+            }
+
+            MessageBox.Show("Запись успешно удалена!");
+        }
+    
 		//Вызов справочника услуг
 		private void btnService_Click(object sender, RoutedEventArgs e)
 		{
 			Service service = new Service();
-			service.Show();
-		}
+			service.ShowDialog();
+
+           
+        }
+
 		//Изменение записи
 		private void btnEdit_Click(object sender, RoutedEventArgs e)
 		{
@@ -219,7 +317,11 @@ namespace Proekt_BarBer
 				selectedPr.Time = textBoxTime.Text;
 				selectedPr.NameService = (NameService)textBoxUsl.SelectedItem;
 				selectedPr.MastSchedule = App.Db.MastSchedules.FirstOrDefault(m => m.Master == textBoxMaster.Text);
-				Price.Text = Price.ToString();
+				selectedPr.Material = (Material)Material.SelectedItem;
+				selectedPr.Price1 = Price1.Text;
+				selectedPr.Price2 = Price2.Text;
+				selectedPr.Price = Price.Text;
+
 
 				App.Db.Persons.AddOrUpdate(selectedPr);
 				App.Db.SaveChanges();
@@ -229,22 +331,33 @@ namespace Proekt_BarBer
 				dGrid.ItemsSource = App.Db.Persons.Local.ToBindingList();
 			}
 		}
-		private void Persent_TextChanged(object sender, TextChangedEventArgs e)
-		{
-
-		}
-		//Применение скидки
-		private void NameDis_SelectionChanged(object sender, SelectionChangedEventArgs e)
-		{
-			if (textBoxDis.SelectedItem is DiscountInfo dis)
-			{
-				Persent.Text = dis.Persent.ToString("#0%");
-			}
-		}
 		//Кнопка очистить
 		public void ButtonClear_Click(object sender, RoutedEventArgs e)
 		{
-			textBoxName.Text = "";
+			if (textBoxMaster.SelectedIndex >= -1)
+
+				textBoxMaster.ItemsSource = App.Db.MastSchedules.Select(m => m.Master).Distinct().ToList();
+
+			if (textBoxDate.SelectedIndex == -1)
+
+				textBoxDate.ItemsSource = App.Db.MastSchedules.Select(m => m.Date).Distinct().ToList();
+
+            //if (textBoxDis.SelectedIndex == -1)
+
+            //    textBoxDis.ItemsSource = App.Db.DisInfo.Select(m => m.NameDis).ToList();
+
+            //if (textBoxUsl.SelectedIndex == -1)
+
+            //    textBoxUsl.ItemsSource = App.Db.NameServices.Select(m => m.Usl).ToList();
+
+            textBoxUsl.ItemsSource = null;
+
+            textBoxUsl.ItemsSource = App.Db.NameServices.ToList();
+
+			textBoxDis.ItemsSource = null;
+			textBoxDis.ItemsSource = App.Db.DisInfo.ToList();	
+
+            textBoxName.Text = "";
 			textBoxAge.Text = "";
 			textBoxDate.Text = "";
 			textBoxTime.Text = "";
@@ -256,71 +369,97 @@ namespace Proekt_BarBer
 			Price.Text = "";
 			Material.Text = "";
 			Persent.Text = "";
+
+
 		}
-		private void textBoxTime_SelectionChanged(object sender, SelectionChangedEventArgs e)
-		{
-			
-            
-        }
-		//Вывод данные в табличную часть
-		private void btnExp_Click_1(object sender, RoutedEventArgs e)
-		{
 
-			dynamic excelApp = Activator.CreateInstance(Type.GetTypeFromProgID("Excel.Application"));
-			var workbook = excelApp.Workbooks.Add();
-			var sheet = workbook.Sheets[1];
+		private async void textBoxDate_SelectionChanged(object sender, SelectionChangedEventArgs e)
+		{
+			UpdateFilteredRecords();
 
-			// Заполните данными из DataGrid 
-			for (int i = 0; i < dGrid.Columns.Count; i++)
+			if (textBoxDate.SelectedItem != null)
 			{
-				sheet.Cells[2, i + 1].Value2 = dGrid.Columns[i].Header;
-				for (int j = 0; j < dGrid.Items.Count; j++)
+				using (var context = new MyContext())
 				{
-					TextBlock cellContent = dGrid.Columns[i].GetCellContent(dGrid.Items[j]) as TextBlock;
-					sheet.Cells[j + 3, i + 1].Value2 = cellContent?.Text ?? "-";
+					var personRecords = await LoadRecordsFromDatabaseAsync(context);
+
+					var selectedDate = textBoxDate.SelectedItem.ToString();
+
+					// Фильтруем записи для выбранной даты
+					var recordsForSelectedDate = personRecords
+						.Where(p => p.Date.Equals(selectedDate, StringComparison.OrdinalIgnoreCase))
+						.ToList();
+
+					// Получаем уникальных мастеров для выбранной даты
+					var uniqueMasters = recordsForSelectedDate
+						.Select(p => p.Master)
+						.Distinct()
+						.ToList();
+
+					// Устанавливаем источник данных для textBoxMaster
+					textBoxMaster.ItemsSource = uniqueMasters;
 				}
+			
 			}
-            sheet.Cells[1, 3].Font.Bold = true; // Жирный шрифт для заголовка
-           /* sheet.Cells[1, 3].Interior.Color = System.Drawing.Color.Yellow;*/ // Желтый фон для заголовка
-            sheet.Cells[1, 3].Value2 = "Ведомость записи клиентов"; // Заголовок таблицы
+			
+		}
 
-            sheet.Cells[2, 1].Interior.Color = System.Drawing.Color.Gray;
-            sheet.Cells[2, 2].Interior.Color = System.Drawing.Color.Gray;
-            sheet.Cells[2, 3].Interior.Color = System.Drawing.Color.Gray;
-            sheet.Cells[2, 4].Interior.Color = System.Drawing.Color.Gray;
-            sheet.Cells[2, 5].Interior.Color = System.Drawing.Color.Gray;
-            sheet.Cells[2, 6].Interior.Color = System.Drawing.Color.Gray;
-            
 
-            sheet.Columns[1].ColumnWidth = 15; // Установите ширину  столбца (в символах)
-            sheet.Columns[2].ColumnWidth = 15; // Установите ширину  столбца (в символах)
-            sheet.Columns[3].ColumnWidth = 15; // Установите ширину столбца (в символах)
-            sheet.Columns[4].ColumnWidth = 15; // Установите ширину  столбца (в символах)
-            sheet.Columns[5].ColumnWidth = 15; // Установите ширину  столбца (в символах)
-            sheet.Columns[6].ColumnWidth = 15; // Установите ширину  столбца (в символах)
+		//запись клиента
+		private void btnAdd_Click(object sender, RoutedEventArgs e)
+		{
 
-            sheet.Cells[2, 1].HorizontalAlignment = XlHAlign.xlHAlignCenter; // Центрирование текста в первой 
-            sheet.Cells[2, 2].HorizontalAlignment = XlHAlign.xlHAlignCenter;
-            sheet.Cells[2, 3].HorizontalAlignment = XlHAlign.xlHAlignCenter;
-            sheet.Cells[2, 4].HorizontalAlignment = XlHAlign.xlHAlignCenter;
-            sheet.Cells[2, 5].HorizontalAlignment = XlHAlign.xlHAlignCenter;
-			sheet.Cells[2, 6].HorizontalAlignment = XlHAlign.xlHAlignCenter;
-           
+            dGrid.ItemsSource = null;
+            dGrid.ItemsSource = App.Db.Persons.Local.ToBindingList();
 
-            sheet.Cells[2, 1].Font.Size = 12; // Установите размер шрифта в 12 пунктов
-            sheet.Cells[2, 2].Font.Size = 12;
-            sheet.Cells[2, 3].Font.Size = 12;
-            sheet.Cells[2, 4].Font.Size = 12;
-            sheet.Cells[2, 5].Font.Size = 12;
-            sheet.Cells[2, 6].Font.Size = 12;
+            var mastSchedule = App.Db.MastSchedules.FirstOrDefault(m => m.Master == textBoxMaster.Text);
 
-            excelApp.Visible = true;
-        }
+            if (mastSchedule != null)
+            {
+                mastSchedule.IsRegistered = false;             
+			}
 
-        private void btnWag_Click_1(object sender, RoutedEventArgs e)
-        {
-			Wage wage = new Wage();
-			wage.Show();
-        }
-    }
+
+            dGrid.ItemsSource = null;
+			dGrid.ItemsSource = App.Db.Persons.Local.ToBindingList();
+			App.Db.Persons.Add(new Person
+			{
+				Name = textBoxName.Text,
+				Date = textBoxDate.Text,
+				Time = textBoxTime.Text,
+				NameService = (NameService)textBoxUsl.SelectedItem,
+				MastSchedule = App.Db.MastSchedules.FirstOrDefault(m => m.Master == textBoxMaster.Text),
+				Material = (Material)Material.SelectedItem,
+				Price1 = Price1.Text,
+				Price2 = Price2.Text,
+				Price = Price.Text,
+				
+			});
+			MessageBox.Show("Пациент успешно зарегистрирован!");
+			App.Db.SaveChanges();
+		}	
+	}
 }
+	
+
+
+
+      
+
+                
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

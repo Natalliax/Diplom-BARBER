@@ -3,72 +3,87 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        
-       
         mc:Ignorable="d"
-        Title="Запись клиентов" Height="800" Width="1200" WindowStartupLocation="CenterScreen" WindowState="Maximized">
+        Title="Запись клиентов" Height="850" Width="1500" 
+        WindowStartupLocation="CenterScreen" 
+     MinWidth="800"
+     MinHeight="400"
+         ResizeMode="CanResizeWithGrip"
+         WindowState="Maximized">
     <Window.Resources>
         <Style TargetType="{x:Type Button}">
-            <Setter Property="Margin" Value="5,2"/>
+            <Setter Property="Width" Value="250"/>
+            <!-- Установите нужную ширину -->
+            <Setter Property="Height" Value="40"/>
+            <!-- Установите нужную высоту -->
+            <Setter Property="FontSize" Value="16"/>
+            <!-- Установите размер шрифта -->
+            <Setter Property="Margin" Value="10,10"/>
+            <!-- Установите отступы -->
         </Style>
+
     </Window.Resources>
-
     <Grid >
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="auto"></ColumnDefinition>
-
-            <ColumnDefinition></ColumnDefinition>
-        </Grid.ColumnDefinitions>
-
-       
 
         <DataGrid x:Name="dGrid" ItemsSource="{Binding Persons}" SelectionChanged="dGrid_SelectionChanged"
                   AutoGenerateColumns ="False"
-                  RowHeaderWidth="50"  IsReadOnly="True" Margin="190,10,10,557" Grid.ColumnSpan="2">
-            <DataGrid.Background>
-                <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
-                    <GradientStop Color="#FFE9DEDE" Offset="0.003"/>
-                    <GradientStop Color="#FFEDD8D8" Offset="1"/>
-                </LinearGradientBrush>
-            </DataGrid.Background>
-            
-           
+                  RowHeaderWidth="50"  IsReadOnly="True" Margin="350,24,10,589" Height="221">
+            <DataGrid.Resources>
+                
+                <SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}" Color="LightBlue"/>
+                <SolidColorBrush x:Key="{x:Static SystemColors.HighlightTextBrushKey}" Color="Black"/>
+            </DataGrid.Resources>
+            <DataGrid.CellStyle>
+                <Style TargetType="DataGridCell">
+                    <Style.Triggers>
+                        <Trigger Property="IsSelected" Value="True">
+                            <Setter Property="Background" Value="LightBlue"/>
+                            <Setter Property="Foreground" Value="Black"/>
+                        </Trigger>
+                    </Style.Triggers>
+                </Style>
+            </DataGrid.CellStyle>
+            <DataGrid.RowStyle>
+                <Style TargetType="DataGridRow">
+                    <Style.Triggers>
+                        <Trigger Property="IsSelected" Value="True">
+                            <Setter Property="BorderBrush" Value="Blue"/>
+                            <Setter Property="BorderThickness" Value="2"/>
+                        </Trigger>
+                    </Style.Triggers>
+                </Style>
+            </DataGrid.RowStyle>
+
             <DataGrid.Columns>
-
-                <DataGridTextColumn Header="Дата" Binding="{Binding Date}" Width ="80"/>
-                <DataGridTextColumn Header="Время" Binding="{Binding Time}" Width="80"/>
-                <DataGridTextColumn Header="Клиент" Binding="{Binding Name}" Width="80"/>
-                <DataGridTextColumn Header="Услуга" Binding="{Binding NameService}" Width="120"/>
-                <DataGridTextColumn Header="Мастер" Binding="{Binding MastSchedule}" Width="80"/>
-                <DataGridTextColumn Header="Стоимость" Binding="{Binding Price, Mode=TwoWay}" Width="80"/>
-            </DataGrid.Columns>
-           
+                    <DataGridTextColumn Header="Дата" Binding="{Binding Date}" Width ="80"/>
+                    <DataGridTextColumn Header="Время" Binding="{Binding Time}" Width="80"/>
+                    <DataGridTextColumn Header="Клиент" Binding="{Binding Name}" Width="80"/>
+                    <DataGridTextColumn Header="Услуга" Binding="{Binding NameService}" Width="120"/>
+                    <DataGridTextColumn Header="Мастер" Binding="{Binding MastSchedule}" Width="80"/>
+                    <DataGridTextColumn Header="Стоимость услуги" Binding="{Binding Price1}" Width="120"/>
+                    <DataGridTextColumn Header="Доп услуги" Binding="{Binding Material}" Width="150"/>
+                    <DataGridTextColumn Header="Стоимость доп услуги" Binding="{Binding Price2}" Width="150"/>
+                    <DataGridTextColumn Header="Стоимость" Binding="{Binding Price, Mode=TwoWay}" Width="80"/>
+                </DataGrid.Columns>
         </DataGrid>
-        
-            <StackPanel x:Name="stackButtons" Background="#FFCBC6C6" Margin="10,5,896,-5" >
 
-                <Button x:Name="btnAdd"  Margin="10 10" Click="btnAdd_Click" Content="Запись" />
-
-                <Button x:Name="btnDelete"  Margin="10 10" Click="btnDelete_Click" Content="Удалить"/>
-
-                <Button x:Name="btnEdit"  RenderTransformOrigin="0.576,3.112" Margin="10 10" Click="btnEdit_Click" Content="Изменить"/>
-
-                <Button x:Name="btnService"  RenderTransformOrigin="0.576,3.112" Margin="10 10" Click="btnService_Click" Content="Услуги"/>
-
-                <Button x:Name="btnReport"  RenderTransformOrigin="0.576,3.112" Margin="10 10" Click="btnReport_Click" Content="Отчет"/>
-
-                <Button x:Name="btnSchedule"  RenderTransformOrigin="0.576,3.112" Margin="10 10" Click="btnSchedule_Click_1" 
-                    Content="Управление"  />
-
-                <Button x:Name="btnExp"  RenderTransformOrigin="0.576,3.112" Margin="10 10" Click="btnExp_Click_1" 
-     Content="Экспорт отчет"/>
-                <Button x:Name="btnWage"  RenderTransformOrigin="0.576,3.112" Margin="10 10" Click="btnWag_Click_1" 
+        <Border>
+        <StackPanel x:Name="stackButtons" Background="#FFCBC6C6" Margin="10,5,1200,10" >
+            <Button x:Name="btnAdd"  Margin="10 10"  Content="Запись" Click="btnAdd_Click" />
+            <Button x:Name="btnDelete"  Margin="10 10" Click="btnDelete_Click" Content="Удалить"/>
+            <Button x:Name="btnEdit"  RenderTransformOrigin="0.576,3.112" Margin="10 10" Click="btnEdit_Click" Content="Изменить"/>
+            <Button x:Name="btnService"  RenderTransformOrigin="0.576,3.112" Margin="10 10" Click="btnService_Click" Content="Услуги"/>
+            <Button x:Name="btnReport"  RenderTransformOrigin="0.576,3.112" Margin="10 10" Click="btnReport_Click" Content="Отчет"/>
+            <Button x:Name="btnSchedule"  RenderTransformOrigin="0.576,3.112" Margin="10 10" Click="btnSchedule_Click_1" 
+                    Content="Управление"/>
+            <Button x:Name="btnWage"  RenderTransformOrigin="0.576,3.112" Margin="10 10" Click="btnWag_Click_1" 
                  Content="Расчет заработной платы"/>
-            </StackPanel>
-       
-        
-            <StackPanel x:Name="stackpanelReg" Margin="131,250,10,0">
-                <Grid x:Name="grid" Height="526" Width="768"  >
+        </StackPanel>
+</Border>
+        <Border>
+        <StackPanel x:Name="stackpanelReg" Margin="350,250,10,10">
+                <Grid x:Name="grid" Height="500" Width="1020"  >
+                    
                     <Grid.Background>
                         <LinearGradientBrush   EndPoint="0.5,1" StartPoint="0.5,0">
                             <GradientStop Color="#FFE9DEDE" Offset="0.003"/>
@@ -77,83 +92,85 @@
                     </Grid.Background>
 
                     <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="142*" />
-                        <ColumnDefinition Width="142*" />
-                        <ColumnDefinition Width="142*" />
-                        <ColumnDefinition Width="142*" />
-                        <ColumnDefinition Width="142*" />
+                        <ColumnDefinition />
+                        <ColumnDefinition />
+                        <ColumnDefinition />
+                        <ColumnDefinition />
+                        <ColumnDefinition />
                     </Grid.ColumnDefinitions>
                     <Grid.RowDefinitions>
-                        <RowDefinition Height="54*"/>
-                        <RowDefinition Height="54*"/>
-                        <RowDefinition Height="54*"/>
-                        <RowDefinition Height="54*"/>
-                        <RowDefinition Height="54*"/>
-                        <RowDefinition Height="54*"/>
-                        <RowDefinition Height="54*"/>
-                        <RowDefinition Height="54*"/>
+                        <RowDefinition Height="70"/>
+                        <RowDefinition Height="70*"/>
+                        <RowDefinition Height="88*"/>
+                        <RowDefinition Height="75*"/>
+                        <RowDefinition Height="65*"/>
+                        <RowDefinition Height="70*"/>
+                        <RowDefinition Height="70*"/>
+                        <RowDefinition Height="70*"/>
                     </Grid.RowDefinitions>
-                    <Label Content="Карточка клиента" Grid.Column="1" Grid.ColumnSpan="3" FontSize="20" HorizontalAlignment ="Center" FontFamily="Century Schoolbook" Margin="49,0,0,67" Grid.RowSpan="2" />
+                    <Label Content="Карточка клиента" Grid.Column="2" Grid.ColumnSpan="3"  FontSize="20" 
+                       HorizontalAlignment ="Center" FontFamily="Century Schoolbook" 
+                       VerticalAlignment="Center" Width="450" />
 
-                    <Label Content="Ф.И.О."  Grid.Row="1" Grid.Column="0"  FontSize="20" FontFamily="Century Schoolbook" HorizontalAlignment ="Center" />
-                    <TextBox x:Name="textBoxName" Grid.Row="1" Grid.ColumnSpan="2"  ToolTip="Имя"
+                    <Label Content="Ф.И.О."  Grid.Row="1"  FontSize="20" FontFamily="Century Schoolbook" 
+                       HorizontalAlignment ="Center" Width="76" VerticalAlignment="Center"/>
+                    <TextBox x:Name="textBoxName" Grid.Row="1" Grid.ColumnSpan="2"  
                              HorizontalAlignment="Center" VerticalAlignment="Center" Width="250" Height="30" 
                              Grid.Column="1" Text="{Binding Name}"/>
 
-                    <Label Content="Дата рождения"  Grid.Row="1"   FontSize="20" Grid.Column="3" FontFamily="Century Schoolbook" HorizontalAlignment ="Center"/>
+                    <Label Content="Дата рождения"  Grid.Row="1"   FontSize="15" Grid.Column="3" 
+                       FontFamily="Century Schoolbook" HorizontalAlignment ="Center" Width="121" VerticalAlignment="Center"/>
                     <DatePicker x:Name="textBoxAge"  Grid.Row="1"  ToolTip="Дата рождения" 
-              HorizontalAlignment="Left" VerticalAlignment="Center" Width="130" Height="30" Grid.Column="4" Margin="15,0,0,0" 
+              HorizontalAlignment="Center" VerticalAlignment="Center"  Grid.Column="4" Margin="0,0,0,0" 
                                 SelectedDateChanged="textBoxAge_TextChanged"
-                            RenderTransformOrigin="-0.802,0.324" />
+                            Height="35" Width="184" />
 
+                    <Label Content="Дата визита"  Grid.Row="2"  FontSize="20" FontFamily="Century Schoolbook" 
+                       HorizontalAlignment ="Center" Width="129" VerticalAlignment="Center"/>
 
+                    <ComboBox x:Name="textBoxDate" Grid.Row="2" Grid.ColumnSpan="2"  
+           HorizontalAlignment="Center" VerticalAlignment="Center" Width="250" Height="30" Grid.Column="1" 
+            SelectionChanged="textBoxDate_SelectionChanged" 
+                          SelectedItem="{Binding MastSchedule.Date}"/>
 
-                    <CheckBox x:Name="checkBoxViz" Grid.Row="2" Grid.Column="3" Content="Визит" Height="30" Width="100" FontSize="20"
-               HorizontalAlignment="Left" VerticalAlignment="Top"  FontFamily="Century Schoolbook" Margin="24,10,0,0"/>
-
-                    <Label Content="Дата визита"  Grid.Row="2" Grid.Column="0"  FontSize="20" FontFamily="Century Schoolbook" HorizontalAlignment ="Center" />
-                    <DatePicker x:Name="textBoxDate" Grid.Row="2" Grid.ColumnSpan="2"  ToolTip="Дата визита" 
-      HorizontalAlignment="Center" VerticalAlignment="Center" Width="250" Height="30" Grid.Column="1" 
-           SelectedDateChanged="textBoxDate_TextChanged" SelectedDate ="{Binding MastSchedule.Date}" />
-
-                    <Label Content="Время визита"  Grid.Row="3" Grid.Column="0"  FontSize="20" FontFamily="Century Schoolbook" HorizontalAlignment ="Center"  />
-                    <ComboBox x:Name="textBoxTime" Grid.Row="3" Grid.ColumnSpan="2"  ToolTip="Время визита"
+                    <Label Content="Время визита"  Grid.Row="4"  FontSize="20" FontFamily="Century Schoolbook" 
+                       HorizontalAlignment ="Center" Width="143"  VerticalAlignment="Center"/>
+                    <ComboBox x:Name="textBoxTime" Grid.Row="4" Grid.ColumnSpan="2"  ToolTip="Время визита" IsEnabled="False"
                 HorizontalAlignment="Center" VerticalAlignment="Center" Width="250" Height="30"                 
-              Grid.Column="1" ItemsSource="{Binding MastSchedule}"
-                              DisplayMemberPath="Time"
-                              SelectionChanged="textBoxTime_SelectionChanged"/>
+              Grid.Column="1" ItemsSource = "{Binding MastSchedule.Time}"/>
 
-                    <Label Content="Услуга"  Grid.Row="4" Grid.Column="0"  FontSize="20"  FontFamily="Century Schoolbook" HorizontalAlignment ="Center"/>
-                    <ComboBox x:Name="textBoxUsl" Grid.Row="4" Grid.ColumnSpan="2"  ToolTip="Услуга"
+                    <Label Content="Услуга"  Grid.Row="5"  FontSize="20"  FontFamily="Century Schoolbook" 
+                       HorizontalAlignment ="Center" Width="77" VerticalAlignment="Center"/>
+                    <ComboBox x:Name="textBoxUsl" Grid.Row="5" Grid.ColumnSpan="2"  ToolTip="Услуга"
               HorizontalAlignment="Center" VerticalAlignment="Top" Width="250" Height="30" Grid.Column="1" 
                           SelectionChanged="Usl_SelectionChanged" Margin="0,14,0,0" 
-                          SelectedItem="{Binding NameService.Usl}"/>
+                         ItemsSource="{Binding NameService.Usl}"/>
 
-                    <Label Content="Дополнительно"  Grid.Row="5" Grid.Column="0"  FontSize="18"  FontFamily="Century Schoolbook" />
-                    <ComboBox x:Name="Material" Grid.Row="5" Grid.ColumnSpan="2"  ToolTip="Дополнительные услуги и материалы"
+                    <Label Content="Дополнительно"  Grid.Row="6" Grid.Column="0"  FontSize="18"  
+                       FontFamily="Century Schoolbook"  VerticalAlignment="Center" HorizontalAlignment ="Center"/>
+                    <ComboBox x:Name="Material" Grid.Row="6" Grid.ColumnSpan="2"  ToolTip="Дополнительные услуги и материалы"
               HorizontalAlignment="Center" VerticalAlignment="Top" Width="250" Height="30" Grid.Column="1" 
                           SelectionChanged="Material_SelectionChanged" Margin="0,13,0,0" 
-               SelectedItem="{Binding Material}"/>
+               ItemsSource="{Binding Material}"/>
 
-                    <Label Content="Мастер"  Grid.Row="6" Grid.Column="0" FontSize="20" FontFamily="Century Schoolbook" 
-            HorizontalAlignment ="Center" />
-                    <ComboBox x:Name="textBoxMaster" Grid.Row="6" Grid.ColumnSpan="2"  ToolTip="Мастер"
+                    <Label Content="Мастер"  Grid.Row="3" FontSize="20" FontFamily="Century Schoolbook" 
+            HorizontalAlignment ="Center" Width="80" VerticalAlignment="Center"/>
+                    <ComboBox x:Name="textBoxMaster" Grid.Row="3" Grid.ColumnSpan="2"  ToolTip="Мастер"
               HorizontalAlignment="Center" VerticalAlignment="Center" Width="250" Height="30" Grid.Column="1" 
-                           ItemsSource="{Binding MastSchedule}"
-                          
+                           ItemsSource="{Binding MastSchedules}" 
                            SelectionChanged="textBoxMaster_SelectionChanged"/>
 
                     <ComboBox x:Name="textBoxDis" DataContext="Скидка" Grid.Row="3"  ToolTip="Скидка клиенту" 
                     HorizontalAlignment="Center" VerticalAlignment="Center" 
-                    Width="150" Height="30" Grid.Column="3" SelectionChanged="NameDis_SelectionChanged"/>
+                    Width="150" Height="30" Grid.Column="3" SelectionChanged="textBoxDis_SelectionChanged" />
 
                     <TextBox x:Name="Persent" Grid.Row="3"  ToolTip="Стоимость" 
                  HorizontalAlignment="Center" VerticalAlignment="Center" 
-                  Width="130" Height="30" Grid.Column="4"  TextChanged="Persent_TextChanged"/>
+                  Width="130" Height="30" Grid.Column="4"/>
 
                     <Label Content="Стоимость"  Grid.Row="4" Grid.Column="3"  FontSize="20" 
-            FontFamily="Century Schoolbook" HorizontalAlignment ="Center" 
-            Margin="0,14,0,14" RenderTransformOrigin="0.494,1.628" />
+            FontFamily="Century Schoolbook" HorizontalAlignment ="Center" VerticalAlignment="Center"
+            RenderTransformOrigin="0.494,1.628" Width="110" />
 
                     <TextBox x:Name="Price1" Grid.Row="4"  ToolTip="Стоимость" 
               HorizontalAlignment="Center" VerticalAlignment="Center" 
@@ -163,15 +180,16 @@
               HorizontalAlignment="Center" VerticalAlignment="Center" 
               Width="130" Height="30" Grid.Column="4"/>
 
-                    <Button Content="Очистить" Grid.Column="1" Grid.Row="7" Click="ButtonClear_Click" IsDefault="True" Margin="15,15,15,0" 
+                    <Button Content="Обновить" Grid.Column="1" Grid.Row="8" Click="ButtonClear_Click" IsDefault="True" Margin="15,15,15,0" 
                             FontFamily="Century Schoolbook" 
-                            Height="36" VerticalAlignment="Top"/>
-                    <Button Content="Расчет" Grid.Column="3" Grid.Row="7" Click="ButtonPrice_Click" Margin="15 15" FontFamily="Century Schoolbook"/>
-                    <TextBox x:Name="Price" Grid.Row="7"   ToolTip="Итого по услугам" 
+                            Height="30" Width="130" VerticalAlignment="Center"/>
+                    <Button Content="Расчет" Grid.Column="3" Grid.Row="8" Click="ButtonPrice_Click" Margin="15,15,15,0" 
+                        FontFamily="Century Schoolbook" Height="30" Width="130"/>
+                    <TextBox x:Name="Price"   Grid.Row="8"   ToolTip="Итого по услугам" 
               HorizontalAlignment="Center" VerticalAlignment="Top" Width="130" Height="30" Grid.Column="4" 
-              Text="{Binding Price}" Margin="0,16,0,0" TextChanged="textBoxTotal_TextChanged"/>
+              Text="{Binding Price}" Margin="0,16,0,0" TextChanged="Price_TextChanged"/>
                 </Grid>
             </StackPanel>
-       
+       </Border>
     </Grid>
 </Window>

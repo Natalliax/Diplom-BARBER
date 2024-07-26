@@ -5,8 +5,63 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Proekt_BarBer"
         mc:Ignorable="d"
-        Title="Zarplata" Height="450" Width="800">
-    <Grid>
-        
+        Title="Ведомость начисления заработной платы" Height="600" Width="1200">
+    <Grid x:Name="Grid" Margin="10,0,0,7" >
+            <Grid.Background>
+                <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+                    <GradientStop Color="#FFE9DEDE" Offset="0.003"/>
+                    <GradientStop Color="#FFEDD8D8" Offset="1"/>
+                </LinearGradientBrush>
+            </Grid.Background>
+            <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="200*" />
+            <ColumnDefinition Width="249*" />
+            <ColumnDefinition Width="196*" />
+            <ColumnDefinition Width="241*" />
+            <ColumnDefinition Width="188*" />
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="14*"/>
+            <RowDefinition Height="14*"/>
+            <RowDefinition Height="14*"/>
+            <RowDefinition Height="14*"/>
+            <RowDefinition Height="14*"/>
+            <RowDefinition Height="14*"/>
+            <RowDefinition Height="14*"/>
+            <RowDefinition Height="14*"/>
+        </Grid.RowDefinitions>
+
+        <Label Content="Ведомость начисления заработной платы" Grid.Column="1" Grid.ColumnSpan="3"
+               FontSize="20" HorizontalAlignment ="Left" FontFamily="Century Schoolbook" 
+               Margin="195,10,0,10" Width="410" />
+        <Label Content="Период" Grid.Column="0" Grid.Row ="1" FontSize="15" Margin="10,10,10,10"/>
+        <Label Content="С" Grid.Column="1" Grid.Row ="1" FontSize="15" Margin="10,10,10,10"/>
+        <Label Content="По" Grid.Column="3" Grid.Row ="1" FontSize="15" Margin="10,10,10,10"/>
+        <DatePicker x:Name="Date1" Grid.Column="2" Grid.Row ="1"  Margin="10,10,10,10" SelectedDateChanged="Date1_TextChanged"/>
+        <DatePicker x:Name="Date2"  Grid.Column="4" Grid.Row ="1"  Margin="10,10,10,10" SelectedDateChanged="Date2_TextChanged"/>
+        <Label Content="Мастер" Grid.Column="0" Grid.Row="2" FontSize="15" Margin="10,10,10,10"/>
+        <ComboBox x:Name="Master" Grid.Column="0" Grid.Row="3" Margin="10,10,10,10" 
+                 SelectedItem="{Binding Person}"
+                 
+                  SelectionChanged="Master_SelectionChanged"/>
+        <Label Content="Процент за работу" Grid.Column="2" Grid.Row="2" FontSize="15" Margin="10,10,10,10"/>
+        <ComboBox x:Name ="Procent1"  Grid.Column="1" Grid.Row="3" Margin="10,10,10,10" SelectionChanged="Procent1_SelectionChanged"/>
+        <TextBox x:Name="Proc1" Grid.Column="2" Grid.Row="3" Margin="10,10,10,10" TextChanged="Proc1_TextChanged"/>
+        <Label Content="Процент за доп услуги" Grid.Column="4" Grid.Row="2" FontSize="15" Margin="10,10,10,10"/>
+        <ComboBox x:Name ="Procent2"  Grid.Column="3" Grid.Row="3" Margin="10,10,10,10" SelectionChanged="Procent2_SelectionChanged"/>
+        <TextBox x:Name="Proc2" Grid.Column="4" Grid.Row="3" Margin="10,10,10,10" TextChanged="Proc2_TextChanged"/>
+        <Label Content="Сумма за услуги" Grid.Column="0" Grid.Row="4" FontSize="15" Margin="10,10,10,10"/>
+        <Label Content="Сумма процента за услуги" Grid.Column="1" Grid.Row="4" FontSize="15" Margin="10,10,10,10"/>
+        <Label Content="Сумма за доп услуги" Grid.Column="2" Grid.Row="4" FontSize="15" Margin="10,10,10,10"/>
+        <Label Content="Сумма процента за доп услуги" Grid.Column="3" Grid.Row="4" FontSize="15" Margin="10,10,10,10"/>
+        <Label Content="Итого начислено" Grid.Column="4" Grid.Row="4" FontSize="15" Margin="10,10,10,10"/>
+        <TextBox x:Name="textBox1" Grid.Column="0" Grid.Row="5" FontSize="20" Margin="10,10,10,10"  />
+        <TextBox x:Name="textBox2" Grid.Column="1" Grid.Row="5" FontSize="20" Margin="10,10,10,10" />
+        <TextBox x:Name="textBox3" Grid.Column="2" Grid.Row="5" FontSize="20" Margin="10,10,10,10"/>
+        <TextBox x:Name="textBox4" Grid.Column="3" Grid.Row="5" FontSize="20" Margin="10,10,10,10" />
+        <TextBox x:Name="textBox5" Grid.Column="4" Grid.Row="5" FontSize="20" Margin="10,10,10,10"/>
+        <Button Content="Очистить" Grid.Column="0" Grid.Row="7" FontSize="20" Margin="10,10,10,10" Click="ButtonCl_Click"  />
+        <Button Content="Расчитать" Grid.Column="2" Grid.Row="7" FontSize="20" Margin="10,10,10,10" Click="ButtonRas_Click"  />
+        <Button Content="Записать" Grid.Column="3" Grid.Row="7" FontSize="20" Margin="10,10,10,10" Click="ButtonOt_Click" />
     </Grid>
 </Window>

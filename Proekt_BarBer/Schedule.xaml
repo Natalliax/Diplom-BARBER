@@ -3,50 +3,46 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:Proekt_BarBer"
+        xmlns:local="clr-namespace:Proekt_BarBer" 
         mc:Ignorable="d"
-        Title="Schedule" Height="450" Width="1200">
-    
+        Title="Табель" Height="450" Width="1200" WindowStartupLocation="CenterScreen" 
+        MinWidth="800" MinHeight="400" ResizeMode="CanResizeWithGrip">
     <Grid x:Name="Grid" Margin="10,0,0,7" Loaded="mGrid_Loaded">
-        <StackPanel Margin="0,0,970,0">
-            <Calendar Margin="10 10"/>
-            <Button Content="Добавить время работы" Margin="10 10" Click="AddButton_Click"/>
-            <Button Content="Скидки/проценты" Margin="10 10" Click="DisButton_Click"/>
-            <Button Content="Изменить" Margin="10 10" Click="EditButton_Click_1"/>
-            <Button Content="Удалить" Margin="10 10" Click="DelButton_Click_2"/>
-            <Button Content="Закрыть" Margin="10 10" Click="ClosButton_Click_3"/>
+        <Grid.Background>
+            <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+                <GradientStop Color="#FFE9DEDE" Offset="0.003"/>
+                <GradientStop Color="#FFEDD8D8" Offset="1"/>
+            </LinearGradientBrush>
+        </Grid.Background>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="200"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <StackPanel Margin="0,0,10,0" Background="#FFCBC6C6" Grid.Row="0" Grid.Column="0">
+            <Button Content="Добавить время работы" Margin="10" Click="AddButton_Click"/>
+            <Button Content="Скидки/проценты" Margin="10" Click="DisButton_Click"/>
+            <Button Content="Изменить" Margin="10" Click="EditButton_Click_1"/>
+            <Button Content="Удалить" Margin="10" Click="DelButton_Click_2"/>
+            <Button Content="Закрыть" Margin="10" Click="ClosButton_Click_3"/>
         </StackPanel>
 
-        <DataGrid  x:Name="scheduleGrid"  AutoGenerateColumns ="False" Margin="230,250,15,10"
-             ItemsSource="{Binding}"
-             SelectionChanged="scheduleGrid_SelectionChanged">
-
-       
-            <DataGrid.Columns>
-                
-                <DataGridTextColumn Binding="{Binding Master}" Header="Мастер" Width="110"/>
-                <DataGridTextColumn  Binding="{Binding Date}"  Header="Дата" Width="110"/>
-                <DataGridTextColumn   Binding="{Binding Time}" Header="Время" Width="110"/>
-               
-                
- 
-            </DataGrid.Columns>
-        </DataGrid>
-
-        <StackPanel x:Name="stackpanelSchedule" DockPanel.Dock="Top" Background="#FFE9DEDE" Margin="235,0,15,221" >
-                <StackPanel Orientation="Horizontal">
+        <StackPanel x:Name="stackpanelSchedule" Background="#FFE9DEDE" Margin="10,0,10,10" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2">
+            <StackPanel Orientation="Horizontal">
                 <Label Width="200" Margin="10">Мастер</Label>
-                <TextBox x:Name="textBox1" Width="200" Margin="10" Text ="{Binding Path= Master}"/>
+                <TextBox x:Name="textBox1" Width="200" Margin="10" Text="{Binding Path=Master}"/>
             </StackPanel>
-
             <StackPanel Orientation="Horizontal">
                 <Label Width="200" Margin="10">Дата</Label>
-                <DatePicker x:Name="textBox2" Width="200" Margin="10" Text ="{Binding Path = Mo}"></DatePicker>
+                <DatePicker x:Name="textBox2" Width="200" Margin="10" Text="{Binding Path=Mo}"/>
             </StackPanel>
-
             <StackPanel Orientation="Horizontal">
                 <Label Width="200" Margin="10">Время</Label>
-                <ComboBox x:Name="textBox3" Width="200" Margin="10"  Text ="{Binding Path = Time}">
+                <ComboBox x:Name="textBox3" Width="200" Margin="10" Text="{Binding Path=Time}">
                     <ComboBoxItem>10:00</ComboBoxItem>
                     <ComboBoxItem>11:00</ComboBoxItem>
                     <ComboBoxItem>12:00</ComboBoxItem>
@@ -56,9 +52,16 @@
                     <ComboBoxItem>17:00</ComboBoxItem>
                     <ComboBoxItem>19:00</ComboBoxItem>
                 </ComboBox>
-            </StackPanel> 
-
+            </StackPanel>
         </StackPanel>
 
+        <DataGrid x:Name="scheduleGrid" AutoGenerateColumns="False" Margin="10,10,10,10" Grid.Row="0" Grid.Column="1"
+                  ItemsSource="{Binding}" SelectionChanged="scheduleGrid_SelectionChanged">
+            <DataGrid.Columns>
+                <DataGridTextColumn Binding="{Binding Master}" Header="Мастер" Width="110"/>
+                <DataGridTextColumn Binding="{Binding Date}" Header="Дата" Width="110"/>
+                <DataGridTextColumn Binding="{Binding Time}" Header="Время" Width="110"/>
+            </DataGrid.Columns>
+        </DataGrid>
     </Grid>
 </Window>
